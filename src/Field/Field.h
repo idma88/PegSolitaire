@@ -24,6 +24,8 @@ private:
   uint8_t m_width = 0;
   // Высота поля
   uint8_t m_height = 0;
+  // Тип поля
+  COMMON::TypeFild m_type = COMMON::TypeFild::ENGLISH;
   // Вектор поля
   std::vector<COMMON::ECell> m_field;
 };
