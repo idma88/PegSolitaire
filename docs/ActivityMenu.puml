@@ -1,0 +1,24 @@
+@startuml Menu
+
+skinparam classAttributeIconSize 0
+skinparam backgroundcolor AntiqueWhite/Green
+skinparam classBackgroundColor White|CornflowerBlue
+
+group MenuSingle
+
+    User -> Game: Run
+    Game -> User: List of possibilities
+    User -> Game: Single
+    GameSingle -> User: Level (default) and Start
+
+    User -> GameSingle: Level 
+    GameLevel -> User: List levels
+    User -> GameLevel: Chose level and go back
+    
+    User -> GameSingle: Start
+    GameSingle -> User: Processing game
+
+end
+
+
+@enduml
