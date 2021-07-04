@@ -12,4 +12,10 @@ enum class ECell : uint8_t
   SET = 2
 };
 
+enum class TypeFild
+{
+  ENGLISH = 0,
+  EUROPEAN = 1,
+  Arbitrary = 2
+};
 }
