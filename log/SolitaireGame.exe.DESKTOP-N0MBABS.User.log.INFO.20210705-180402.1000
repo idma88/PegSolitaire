@@ -1,0 +1,7 @@
+Log file created at: 2021/07/05 18:04:02
+Running on machine: DESKTOP-N0MBABS
+Running duration (h:mm:ss): 0:00:00
+Log line format: [IWEF]yyyymmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I20210705 18:04:02.123005 18192 main.cpp:13] Hello world!
+E20210705 18:04:02.138960 18192 Field.cpp:19] The entered coordinates are out of range!
+I20210705 18:04:02.142951 18192 main.cpp:22] trueCreate 0

@@ -1,0 +1,7 @@
+Log file created at: 2021/07/05 18:03:14
+Running on machine: DESKTOP-N0MBABS
+Running duration (h:mm:ss): 0:00:00
+Log line format: [IWEF]yyyymmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I20210705 18:03:14.775735 16184 main.cpp:13] Hello world!
+E20210705 18:03:14.792691 16184 Field.cpp:19] Введённые координаты выходят за диапазон
+I20210705 18:03:14.796681 16184 main.cpp:22] trueCreate 0

@@ -12,7 +12,7 @@ enum class ECell : uint8_t
   SET = 2
 };
 
-enum class TypeFild
+enum class ETypeField
 {
   ENGLISH = 0,
   EUROPEAN = 1,

@@ -19,3 +19,12 @@ set(sources
 )
 
 add_executable(${PROJECT_NAME} ${sources})
+
+find_library(GLOG_LIB glogd ${CMAKE_BINARY_DIR}/glog/Debug)
+if(GLOG_LIB)
+    message ("GLOG FOUND!!!")
+else()
+    message ("GLOG NOT FOUND!!!")
+endif()
+
+target_link_libraries(${PROJECT_NAME} glog)
