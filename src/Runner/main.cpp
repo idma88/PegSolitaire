@@ -16,10 +16,11 @@ main(int argc, char* argv[])
 
   Field _field;
   bool trueCreate;
-  _field.Create();
+  _field.Create(COMMON::ETypeField::ENGLISH);
 
-  trueCreate = _field.SetChip(6, 15);
+  trueCreate = _field.SetChip(6, 6);
   LOG(INFO) << "trueCreate " << trueCreate;
+
 
   return 0;
 }

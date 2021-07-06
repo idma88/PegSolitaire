@@ -18,7 +18,7 @@ public:
 
 public:
   // Функция создания поля
-  void Create();
+  void Create(COMMON::ETypeField type);
   // Функция установки фишки
   bool SetChip(uint8_t x_field, uint8_t y_field);
   // Функция убирания фишки

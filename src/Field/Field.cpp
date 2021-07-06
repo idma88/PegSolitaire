@@ -5,11 +5,44 @@ Field::Field() {}
 Field::~Field() {}
 
 void
-Field::Create()
+Field::Create(COMMON::ETypeField type)
 {
   // Меняем длину вектора под размер поля
   m_field.resize(m_width * m_height);
   std::cout << m_field.size() << std::endl;
+
+  switch (type) {
+    // Отрисовка поля для Английской версии
+    case COMMON::ETypeField::ENGLISH:
+      m_field = {
+        COMMON::LOCK, COMMON::LOCK, COMMON::SET,  COMMON::SET,  COMMON::SET,
+        COMMON::LOCK, COMMON::LOCK, COMMON::LOCK, COMMON::LOCK, COMMON::SET,
+        COMMON::SET,  COMMON::SET,  COMMON::LOCK, COMMON::LOCK, COMMON::SET,
+        COMMON::SET,  COMMON::SET,  COMMON::SET,  COMMON::SET,  COMMON::SET,
+        COMMON::SET,  COMMON::SET,  COMMON::SET,  COMMON::SET,  COMMON::FREE,
+        COMMON::SET,  COMMON::SET,  COMMON::SET,  COMMON::SET,  COMMON::SET,
+        COMMON::SET,  COMMON::SET,  COMMON::SET,  COMMON::SET,  COMMON::SET,
+        COMMON::LOCK, COMMON::LOCK, COMMON::SET,  COMMON::SET,  COMMON::SET,
+        COMMON::LOCK, COMMON::LOCK, COMMON::LOCK, COMMON::LOCK, COMMON::SET,
+        COMMON::SET,  COMMON::SET,  COMMON::LOCK, COMMON::LOCK
+      };
+      break;
+    // Отрисовка поля для Европейской версии
+    case COMMON::ETypeField::EUROPEAN:
+      m_field = {
+        COMMON::LOCK, COMMON::LOCK, COMMON::SET,  COMMON::SET,  COMMON::SET,
+        COMMON::LOCK, COMMON::LOCK, COMMON::LOCK, COMMON::SET,  COMMON::SET,
+        COMMON::SET,  COMMON::SET,  COMMON::SET,  COMMON::LOCK, COMMON::SET,
+        COMMON::SET,  COMMON::SET,  COMMON::SET,  COMMON::SET,  COMMON::SET,
+        COMMON::SET,  COMMON::SET,  COMMON::SET,  COMMON::SET,  COMMON::FREE,
+        COMMON::SET,  COMMON::SET,  COMMON::SET,  COMMON::SET,  COMMON::SET,
+        COMMON::SET,  COMMON::SET,  COMMON::SET,  COMMON::SET,  COMMON::SET,
+        COMMON::LOCK, COMMON::SET,  COMMON::SET,  COMMON::SET,  COMMON::SET,
+        COMMON::SET,  COMMON::LOCK, COMMON::LOCK, COMMON::LOCK, COMMON::SET,
+        COMMON::SET,  COMMON::SET,  COMMON::LOCK, COMMON::LOCK
+      };
+      break;
+  }
 }
 
 bool
@@ -20,10 +53,14 @@ Field::SetChip(uint8_t x_field, uint8_t y_field)
     return false;
   }
   // Устанавливаем фишку в выбранную ячейку
-  m_field[y_field * (m_width - 1) + x_field] = COMMON::ECell::SET;
+  m_field[y_field * m_width + x_field] = COMMON::ECell::SET;
   std::cout << "m_field [" << y_field * m_width + x_field
-            << "] = " << static_cast<int>(m_field[y_field * m_width + x_field])
-            << std::endl;
+            << "] = " << m_field[y_field * m_width + x_field] << std::endl;
+
+  for (auto i : m_field) {
+    std::cout << i << ' ';
+  }
+
   return true;
 }
 
