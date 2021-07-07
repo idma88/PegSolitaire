@@ -14,8 +14,7 @@ enum ECell
 
 enum class ETypeField
 {
-  ENGLISH = 0,
-  EUROPEAN = 1,
-  Arbitrary = 2
+  EN = 0,
+  EU = 1
 };
 }

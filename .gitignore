@@ -4,4 +4,4 @@ docs/*~*
 src/out
 build/
 *.orig
-!/log/*
+log/*

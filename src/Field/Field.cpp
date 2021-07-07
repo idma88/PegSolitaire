@@ -4,16 +4,18 @@ Field::Field() {}
 
 Field::~Field() {}
 
-void
+bool
 Field::Create(COMMON::ETypeField type)
 {
+  // Устанавливаем значения по умолчанию
+  m_width = 7;
+  m_height = 7;
   // Меняем длину вектора под размер поля
   m_field.resize(m_width * m_height);
-  std::cout << m_field.size() << std::endl;
 
   switch (type) {
     // Отрисовка поля для Английской версии
-    case COMMON::ETypeField::ENGLISH:
+    case COMMON::ETypeField::EN:
       m_field = {
         COMMON::LOCK, COMMON::LOCK, COMMON::SET,  COMMON::SET,  COMMON::SET,
         COMMON::LOCK, COMMON::LOCK, COMMON::LOCK, COMMON::LOCK, COMMON::SET,
@@ -28,7 +30,7 @@ Field::Create(COMMON::ETypeField type)
       };
       break;
     // Отрисовка поля для Европейской версии
-    case COMMON::ETypeField::EUROPEAN:
+    case COMMON::ETypeField::EU:
       m_field = {
         COMMON::LOCK, COMMON::LOCK, COMMON::SET,  COMMON::SET,  COMMON::SET,
         COMMON::LOCK, COMMON::LOCK, COMMON::LOCK, COMMON::SET,  COMMON::SET,
@@ -43,23 +45,28 @@ Field::Create(COMMON::ETypeField type)
       };
       break;
   }
+
+  return true;
+}
+
+bool
+Create(uint8_t width, uint8_t height, uint8_t* pattern)
+{
+  /*
+    code
+  */
+  return true;
 }
 
 bool
 Field::SetChip(uint8_t x_field, uint8_t y_field)
 {
-  if ((m_width - x_field <= 0) || (m_height - y_field <= 0)) {
+  if ((m_width <= x_field) || (m_height <= y_field)) {
     LOG(ERROR) << "The entered coordinates are out of range!";
     return false;
   }
   // Устанавливаем фишку в выбранную ячейку
   m_field[y_field * m_width + x_field] = COMMON::ECell::SET;
-  std::cout << "m_field [" << y_field * m_width + x_field
-            << "] = " << m_field[y_field * m_width + x_field] << std::endl;
-
-  for (auto i : m_field) {
-    std::cout << i << ' ';
-  }
 
   return true;
 }
@@ -67,7 +74,7 @@ Field::SetChip(uint8_t x_field, uint8_t y_field)
 bool
 Field::ClearChip(uint8_t x_field, uint8_t y_field)
 {
-  if ((m_width - x_field <= 0) || (m_height - y_field <= 0)) {
+  if ((m_width <= x_field) || (m_height <= y_field)) {
     LOG(ERROR) << "The entered coordinates are out of range!";
     return false;
   }
@@ -79,7 +86,7 @@ Field::ClearChip(uint8_t x_field, uint8_t y_field)
 bool
 Field::LockField(uint8_t x_field, uint8_t y_field)
 {
-  if ((m_width - x_field <= 0) || (m_height - y_field <= 0)) {
+  if ((m_width <= x_field) || (m_height <= y_field)) {
     LOG(ERROR) << "The entered coordinates are out of range!";
     return false;
   }
@@ -88,19 +95,9 @@ Field::LockField(uint8_t x_field, uint8_t y_field)
   return true;
 }
 
-#pragma region InterfaceField
-void
-Field::SetScope(uint8_t width, uint8_t height)
+std::vector<COMMON::ECell>
+Field::GetField()
 {
-  // Обновить приватные переменные
-  m_width = width;
-  m_height = height;
+  // Возвращаем поле
+  return m_field;
 }
-
-void
-Field::SetType(COMMON::ETypeField type)
-{
-  // Обновить тип игры
-  m_type = type;
-}
-#pragma endregion

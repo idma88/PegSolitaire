@@ -7,7 +7,13 @@ option(BUILD_TESTING OFF)
 option(WITH_GFLAGS OFF)
 add_compile_options(-DHAVE_SNPRINTF)
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+
 add_subdirectory(glog)
 include_directories(glog)
 
+enable_testing()
+add_subdirectory(googletest)
+
 add_subdirectory(src)
+
+add_subdirectory(SolitaireTest)

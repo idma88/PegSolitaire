@@ -17,22 +17,18 @@ public:
   ~Field();
 
 public:
-  // Функция создания поля
-  void Create(COMMON::ETypeField type);
+  // Функция создания поля для EN и EU
+  bool Create(COMMON::ETypeField type);
+  // Функция создания произвольного поля
+  bool Create(uint8_t width, uint8_t height, uint8_t* pattern);
   // Функция установки фишки
   bool SetChip(uint8_t x_field, uint8_t y_field);
   // Функция убирания фишки
   bool ClearChip(uint8_t x_field, uint8_t y_field);
   // Функция блокирования поля
   bool LockField(uint8_t x_field, uint8_t y_field);
-
-public:
-#pragma region InterfaceField
-  // Установка границ сетки
-  void SetScope(uint8_t width, uint8_t height);
-  // Установка вида игрыs
-  void SetType(COMMON::ETypeField type);
-#pragma endregion
+  // Функция получения игрового поля
+  std::vector<COMMON::ECell> GetField();
 
 private:
   // Ширина поля
@@ -40,7 +36,7 @@ private:
   // Высота поля
   uint8_t m_height = 7;
   // Тип поля
-  COMMON::ETypeField m_type = COMMON::ETypeField::ENGLISH;
+  COMMON::ETypeField m_type = COMMON::ETypeField::EN;
   // Вектор поля
   std::vector<COMMON::ECell> m_field;
 };
