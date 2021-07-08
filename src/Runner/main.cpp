@@ -10,16 +10,16 @@ main(int argc, char* argv[])
 
   FLAGS_log_dir = "..\\..\\..\\..\\log";
 
-  LOG(INFO) << "Hello world!";
+  LOG(INFO) << "Start main!";
 
   setlocale(LC_ALL, "Russian");
 
   Field _field;
   bool trueCreate;
-  _field.Create(COMMON::ETypeField::EN);
+  _field.Create(COMMON::ETypeField::ENGLISH);
 
-  trueCreate = _field.SetChip(6, 7);
-  LOG(INFO) << "trueCreate " << trueCreate;
+  trueCreate = _field.SetCell(6, 6, COMMON::ECell::SET);
+  LOG(INFO) << "trueCreate = " << trueCreate;
 
   return 0;
 }

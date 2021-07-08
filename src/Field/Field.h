@@ -21,12 +21,8 @@ public:
   bool Create(COMMON::ETypeField type);
   // Функция создания произвольного поля
   bool Create(uint8_t width, uint8_t height, uint8_t* pattern);
-  // Функция установки фишки
-  bool SetChip(uint8_t x_field, uint8_t y_field);
-  // Функция убирания фишки
-  bool ClearChip(uint8_t x_field, uint8_t y_field);
-  // Функция блокирования поля
-  bool LockField(uint8_t x_field, uint8_t y_field);
+  // Функция взаимодействия с ячейкой
+  bool SetCell(uint8_t x_field, uint8_t y_field, COMMON::ECell value);
   // Функция получения игрового поля
   std::vector<COMMON::ECell> GetField();
 
@@ -35,8 +31,6 @@ private:
   uint8_t m_width = 7;
   // Высота поля
   uint8_t m_height = 7;
-  // Тип поля
-  COMMON::ETypeField m_type = COMMON::ETypeField::EN;
   // Вектор поля
   std::vector<COMMON::ECell> m_field;
 };

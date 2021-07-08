@@ -1,6 +1,10 @@
 #include "Field.h"
 
-Field::Field() {}
+Field::Field()
+{
+  m_width = 0;
+  m_height = 0;
+}
 
 Field::~Field() {}
 
@@ -15,7 +19,7 @@ Field::Create(COMMON::ETypeField type)
 
   switch (type) {
     // Отрисовка поля для Английской версии
-    case COMMON::ETypeField::EN:
+    case COMMON::ETypeField::ENGLISH:
       m_field = {
         COMMON::LOCK, COMMON::LOCK, COMMON::SET,  COMMON::SET,  COMMON::SET,
         COMMON::LOCK, COMMON::LOCK, COMMON::LOCK, COMMON::LOCK, COMMON::SET,
@@ -30,7 +34,7 @@ Field::Create(COMMON::ETypeField type)
       };
       break;
     // Отрисовка поля для Европейской версии
-    case COMMON::ETypeField::EU:
+    case COMMON::ETypeField::EUROPEAN:
       m_field = {
         COMMON::LOCK, COMMON::LOCK, COMMON::SET,  COMMON::SET,  COMMON::SET,
         COMMON::LOCK, COMMON::LOCK, COMMON::LOCK, COMMON::SET,  COMMON::SET,
@@ -59,39 +63,14 @@ Create(uint8_t width, uint8_t height, uint8_t* pattern)
 }
 
 bool
-Field::SetChip(uint8_t x_field, uint8_t y_field)
+Field::SetCell(uint8_t x_field, uint8_t y_field, COMMON::ECell value)
 {
   if ((m_width <= x_field) || (m_height <= y_field)) {
     LOG(ERROR) << "The entered coordinates are out of range!";
     return false;
   }
-  // Устанавливаем фишку в выбранную ячейку
-  m_field[y_field * m_width + x_field] = COMMON::ECell::SET;
-
-  return true;
-}
-
-bool
-Field::ClearChip(uint8_t x_field, uint8_t y_field)
-{
-  if ((m_width <= x_field) || (m_height <= y_field)) {
-    LOG(ERROR) << "The entered coordinates are out of range!";
-    return false;
-  }
-  // Убираем фишку из выбранной ячейки
-  m_field[y_field * m_width + x_field] = COMMON::ECell::FREE;
-  return true;
-}
-
-bool
-Field::LockField(uint8_t x_field, uint8_t y_field)
-{
-  if ((m_width <= x_field) || (m_height <= y_field)) {
-    LOG(ERROR) << "The entered coordinates are out of range!";
-    return false;
-  }
-  // Блокируем выбранное поле
-  m_field[y_field * m_width + x_field] = COMMON::ECell::LOCK;
+  // Устанавливаем значение в выбранную ячейку
+  m_field[y_field * m_width + x_field] = value;
   return true;
 }
 
