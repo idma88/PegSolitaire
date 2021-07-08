@@ -1,7 +1,9 @@
 #include "../Common/Common.h"
 #include "../Field/Field.h"
+#include "../Game/CoreGame.h"
 #include <glog/logging.h>
 #include <iostream>
+
 int
 main(int argc, char* argv[])
 {

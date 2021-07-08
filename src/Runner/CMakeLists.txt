@@ -4,9 +4,10 @@ set(CMAKE_CXX_STANDARD 11)
 
 set(field_dir ../Field/)
 set(common_dir ../Common/)
+set(game_dir ../Game/)
 
-file(GLOB_RECURSE common_sources ${field_dir}*.cpp ${common_dir}*.cpp)  
-file(GLOB_RECURSE common_headers ${field_dir}*.h ${common_dir}*.h)
+file(GLOB_RECURSE common_sources ${field_dir}*.cpp ${common_dir}*.cpp ${game_dir}*.cpp)  
+file(GLOB_RECURSE common_headers ${field_dir}*.h ${common_dir}*.h ${game_dir}*.h)
 
 file(GLOB_RECURSE src_sources *.cpp)
 file(GLOB_RECURSE src_headers *.h)
