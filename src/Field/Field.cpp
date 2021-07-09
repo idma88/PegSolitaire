@@ -1,10 +1,9 @@
 #include "Field.h"
 
 Field::Field()
-{
-  m_width = 0;
-  m_height = 0;
-}
+  : m_width(0)
+  , m_height(0)
+{}
 
 Field::~Field() {}
 
@@ -54,11 +53,14 @@ Field::Create(COMMON::ETypeField type)
 }
 
 bool
-Create(uint8_t width, uint8_t height, uint8_t* pattern)
+Field::Create(uint8_t width,
+              uint8_t height,
+              std::vector<COMMON::ECell>& pattern)
 {
-  /*
-    code
-  */
+  // Меняем длину вектора под размер поля
+  m_field.resize(width * height);
+  // Копируем данные из шаблона в поле
+  memcpy(m_field.data(), pattern.data(), pattern.size());
   return true;
 }
 
