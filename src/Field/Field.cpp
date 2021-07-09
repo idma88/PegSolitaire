@@ -57,6 +57,11 @@ Field::Create(uint8_t width,
               uint8_t height,
               std::vector<COMMON::ECell>& pattern)
 {
+  // Проверяем размеры
+  if ((max_width <= width) || (max_height <= height)) {
+    LOG(ERROR) << "The entered coordinates are out of range!";
+    return false;
+  }
   // Меняем длину вектора под размер поля
   m_field.resize(width * height);
   // Копируем данные из шаблона в поле
@@ -67,6 +72,7 @@ Field::Create(uint8_t width,
 bool
 Field::SetCell(uint8_t x_field, uint8_t y_field, COMMON::ECell value)
 {
+  // Проверяем диапазон
   if ((m_width <= x_field) || (m_height <= y_field)) {
     LOG(ERROR) << "The entered coordinates are out of range!";
     return false;
