@@ -37,6 +37,10 @@ private:
   uint8_t const max_width = 64;
   // Максимальная высота поля
   uint8_t const max_height = 64;
+  // Максимальная ширина поля
+  uint8_t const min_width = 7;
+  // Максимальная высота поля
+  uint8_t const min_height = 7;
   // Вектор поля
   std::vector<COMMON::ECell> m_field;
 };

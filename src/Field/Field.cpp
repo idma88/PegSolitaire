@@ -49,6 +49,8 @@ Field::Create(COMMON::ETypeField type)
       break;
   }
 
+  m_field.push_back(static_cast<COMMON::ECell>(3));
+
   return true;
 }
 
@@ -57,15 +59,39 @@ Field::Create(uint8_t width,
               uint8_t height,
               std::vector<COMMON::ECell>& pattern)
 {
-  // Проверяем размеры
-  if ((max_width <= width) || (max_height <= height)) {
+  // Проверяем размеры от 7x7 до 64x64
+  if (((max_width < width) && (width < min_width)) ||
+      ((max_height < height) && (height < min_height))) {
     LOG(ERROR) << "The entered coordinates are out of range!";
     return false;
   }
+
+  // Проверяем вектор на наличие данных
+  if (pattern.size() == 0) {
+    LOG(ERROR) << "There is no data!";
+    return false;
+  }
+
+  // Проверяем вектор на соответствие размера
+  if (pattern.size() == (width * height)) {
+    LOG(ERROR) << "Vector size does not fit the generated field!";
+    return false;
+  }
+
+  for (auto& i : pattern) {
+    if ((pattern[i] != COMMON::ECell::FREE) ||
+        (pattern[i] != COMMON::ECell::LOCK) ||
+        (pattern[i] != COMMON::ECell::SET)) {
+      LOG(ERROR) << "Invalid data type in pattern!";
+      return false;
+    }
+  }
+
   // Меняем длину вектора под размер поля
   m_field.resize(width * height);
   // Копируем данные из шаблона в поле
-  memcpy(m_field.data(), pattern.data(), pattern.size());
+  memcpy(
+    m_field.data(), pattern.data(), std::min(m_field.size(), pattern.size()));
   return true;
 }
 
