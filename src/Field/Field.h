@@ -3,10 +3,12 @@
 #include "../Common/Common.h"
 #include "stdint.h"
 
+#include <algorithm>
 #include <glog/logging.h>
 #include <iostream>
 #include <memory>
 #include <vector>
+
 
 class Field
 {

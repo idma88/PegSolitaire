@@ -49,8 +49,6 @@ Field::Create(COMMON::ETypeField type)
       break;
   }
 
-  m_field.push_back(static_cast<COMMON::ECell>(3));
-
   return true;
 }
 
@@ -73,18 +71,17 @@ Field::Create(uint8_t width,
   }
 
   // Проверяем вектор на соответствие размера
-  if (pattern.size() == (width * height)) {
+  if (pattern.size() != (width * height)) {
     LOG(ERROR) << "Vector size does not fit the generated field!";
     return false;
   }
 
-  for (auto& i : pattern) {
-    if ((pattern[i] != COMMON::ECell::FREE) ||
-        (pattern[i] != COMMON::ECell::LOCK) ||
-        (pattern[i] != COMMON::ECell::SET)) {
-      LOG(ERROR) << "Invalid data type in pattern!";
-      return false;
-    }
+  if (!std::all_of(pattern.begin(), pattern.end(), [](COMMON::ECell item) {
+        return (item == COMMON::ECell::FREE) || (item == COMMON::ECell::LOCK) ||
+               (item == COMMON::ECell::SET);
+      })) {
+    LOG(ERROR) << "Invalid data type in pattern!";
+    return false;
   }
 
   // Меняем длину вектора под размер поля

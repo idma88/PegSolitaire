@@ -21,7 +21,10 @@ main(int argc, char* argv[])
   _field.Create(COMMON::ETypeField::ENGLISH);
 
   trueCreate = _field.SetCell(6, 6, COMMON::ECell::SET);
-  LOG(INFO) << "trueCreate = " << trueCreate;
-  
+
+  if (trueCreate)
+    LOG(INFO) << "Success!";
+  else
+    LOG(ERROR) << "Error!";
   return 0;
 }
