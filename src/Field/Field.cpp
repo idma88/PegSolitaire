@@ -73,7 +73,7 @@ Field::Create(COMMON::ETypeField type)
 bool
 Field::Create(uint8_t width,
               uint8_t height,
-              std::vector<COMMON::ECell>& pattern)
+              const std::vector<COMMON::ECell>& pattern)
 {
   // Проверяем вектор на наличие данных
   if (pattern.size() == 0) {
@@ -103,7 +103,7 @@ Field::Create(uint8_t width,
 }
 
 bool
-Field::SetCell(uint8_t x_field, uint8_t y_field, COMMON::ECell value)
+Field::SetCell(uint8_t x_field, uint8_t y_field, const COMMON::ECell value)
 {
   // Проверка типа ячейки
   if ((value != COMMON::ECell::FREE) && (value != COMMON::ECell::LOCK) &&
