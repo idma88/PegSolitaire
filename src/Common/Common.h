@@ -5,7 +5,7 @@
 namespace COMMON {
 
 // Возможные состояния ячейки
-enum ECell
+enum class ECell
 {
   LOCK = 0,
   FREE = 1,

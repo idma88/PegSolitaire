@@ -9,7 +9,6 @@
 #include <memory>
 #include <vector>
 
-
 class Field
 {
 public:
