@@ -1,11 +1,9 @@
 #include "Player.h"
 
 Player::Player()
-{
-  /*
-  code
-  */
-}
+  : m_score(0)
+  , m_essence(COMMON::EPlayerType::HUMAN)
+{}
 
 Player::~Player()
 {
@@ -22,32 +20,26 @@ Player::SetName(const std::string name)
 }
 
 bool
-Player::SetEssence(const COMMON::ENature type)
+Player::SetEssence(const COMMON::EPlayerType type)
 {
   m_essence = type;
   return true;
 }
 
 void
-Player::AddPoints(const uint32_t points)
+Player::AddPoints(const uint32_t score)
 {
-  m_points = m_points + points;
-}
-
-void
-Player::SetRemainPoints(const uint32_t remain_points)
-{
-  m_remain_points = m_remain_points;
+  m_score = m_score + m_score;
 }
 
 COMMON::Information
 Player::GetInformationPlayer()
 {
+  // Хранит информациюю для выдачи и перед запросом обновляется
+  COMMON::Information information;
   // Обновляем данные
-  m_information.name = m_name;
-  m_information.essence = m_essence;
-  m_information.points = m_points;
-  m_information.remain_points = m_remain_points;
+  information.name = m_name;
+  information.score = m_score;
 
-  return m_information;
+  return information;
 }

@@ -21,7 +21,7 @@ enum class ETypeField
 };
 
 // Игрок или компьютер
-enum class ENature
+enum class EPlayerType
 {
   HUMAN = 0,
   COMPUTER = 1
@@ -33,10 +33,8 @@ struct Information
   // Имя игрока
   std::string name = "";
   // сущность (игрок или комьютер)
-  COMMON::ENature essence = COMMON::ENature::HUMAN;
+  COMMON::EPlayerType essence = COMMON::EPlayerType::HUMAN;
   // Колличество съеденых фишек
-  uint32_t points = 0;
-  // Колличество оставшихся фишек
-  uint32_t remain_points = 0;
+  uint32_t score = 0;
 };
 }
