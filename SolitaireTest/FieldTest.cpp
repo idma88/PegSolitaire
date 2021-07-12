@@ -1,0 +1,40 @@
+#include "../src/Field/Field.h"
+#include "../src/Common/Common.h"
+#include "CommonTest.h"
+#include "gtest/gtest.h"
+
+// Фикстуры ClassField
+class FieldTest : public ::testing::TestWithParam<int>
+{
+public:
+  // Экземпляр класса Field
+  Field field;
+  // Ожидаемое поле
+  std::vector<COMMON::ECell> field_expected;
+  // Размер для EN и EU полей 7x7
+  const int Size = 49;
+};
+
+//! Подаваемые значения для выбора режима
+INSTANTIATE_TEST_SUITE_P(ModeL,
+                         FieldTest,
+                         ::testing::Values(COMMON::ETypeField::ENGLISH,
+                                           COMMON::ETypeField::EUROPEAN));
+
+TEST_P(FieldTest, CheckingPositiveTheCreationOfFields)
+{
+  // Получение возможнных параметров
+  auto xmode = static_cast<COMMON::ETypeField>(GetParam());
+  // Создание поля с для английской версии
+  ASSERT_TRUE(field.Create(xmode));
+  // Получить это поле
+  field_expected = field.GetField();
+  // Проверяем соответствие размеров
+  ASSERT_EQ(field_expected.size(), Size);
+}
+
+TEST_F(FieldTest, CheckingNegativeTheCreationOfFields)
+{
+  // Создание поля с неверным параметром
+  ASSERT_FALSE(field.Create(static_cast<COMMON::ETypeField>(3)));
+}

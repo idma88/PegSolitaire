@@ -14,7 +14,6 @@ endif()
 message("CMAKE_BINARY_DIR = " ${CMAKE_BINARY_DIR})
 include_directories("${CMAKE_BINARY_DIR}/googletest")
 
-
 if (CMAKE_VERSION VERSION_LESS 2.8.11)
 
     include_directories("${gtest_SOURCE_DIR}/include"
@@ -25,8 +24,29 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
 
 endif()
 
-file(GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR} *.cpp)
+set(field_dir ../src/Field/)
 
-add_executable(testmain ${TEST_SRC_FILES})
-target_link_libraries(testmain gtest gtest_main)
+file(GLOB_RECURSE common_sources_test ${field_dir}*.cpp)  
+file(GLOB_RECURSE common_headers_test ${field_dir}*.h)
+
+file(GLOB_RECURSE TEST_SRC_SOURCE ${PROJECT_SOURCE_DIR} *.cpp)
+file(GLOB_RECURSE TEST_SRC_HEADERS ${PROJECT_SOURCE_DIR} *.h)
+
+set(sources_test
+    ${TEST_SRC_SOURCE}
+    ${TEST_SRC_HEADERS}
+    ${common_sources_test}
+    ${common_headers_test}
+)
+
+
+find_library(GLOG_LIB glogd ${CMAKE_BINARY_DIR}/glog/Debug)
+if(GLOG_LIB)
+    message ("GLOG_TEST FOUND!!!")
+else()
+    message ("GLOG_TEST NOT FOUND!!!")
+endif()
+
+add_executable(testmain ${sources_test})
+target_link_libraries(testmain gtest gmock_main gtest_main glog)
 add_test(NAME testmain COMMAND testmain)
