@@ -5,16 +5,12 @@ Player::Player()
   , m_essence(COMMON::EPlayerType::HUMAN)
 {}
 
-Player::~Player()
-{
-  /*
-  code
-  */
-}
+Player::~Player() {}
 
 bool
 Player::SetName(const std::string name)
 {
+  // Записываем имя
   m_name = name;
   return true;
 }
@@ -22,6 +18,7 @@ Player::SetName(const std::string name)
 bool
 Player::SetEssence(const COMMON::EPlayerType type)
 {
+  // Устанавливаем сущность
   m_essence = type;
   return true;
 }
@@ -29,17 +26,27 @@ Player::SetEssence(const COMMON::EPlayerType type)
 void
 Player::AddPoints(const uint32_t score)
 {
+  // Обновляем счёт
   m_score = m_score + m_score;
 }
 
-COMMON::Information
-Player::GetInformationPlayer()
+std::string
+Player::GetName()
 {
-  // Хранит информациюю для выдачи и перед запросом обновляется
-  COMMON::Information information;
-  // Обновляем данные
-  information.name = m_name;
-  information.score = m_score;
+  // Возвращаем имя
+  return m_name;
+}
 
-  return information;
+COMMON::EPlayerType
+Player::GetEssence()
+{
+  // Возвращаем сущность
+  return m_essence;
+}
+
+uint32_t
+Player::GetScore()
+{
+  // Возвращаем счёт
+  return m_score;
 }

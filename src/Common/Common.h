@@ -26,15 +26,4 @@ enum class EPlayerType
   HUMAN = 0,
   COMPUTER = 1
 };
-
-// Структура для выдачи информации
-struct Information
-{
-  // Имя игрока
-  std::string name = "";
-  // сущность (игрок или комьютер)
-  COMMON::EPlayerType essence = COMMON::EPlayerType::HUMAN;
-  // Колличество съеденых фишек
-  uint32_t score = 0;
-};
 }

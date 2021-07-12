@@ -22,8 +22,12 @@ public:
   bool SetEssence(const COMMON::EPlayerType type);
   // Добавить кол-во съеденых фишек
   void AddPoints(const uint32_t score);
-  // Получить информация об игроке
-  COMMON::Information GetInformationPlayer();
+  // Получить информация Имя
+  std::string GetName();
+  // Получить сущность
+  COMMON::EPlayerType GetEssence();
+  // Получить счёт
+  uint32_t GetScore();
 
 private:
   // Имя игрока

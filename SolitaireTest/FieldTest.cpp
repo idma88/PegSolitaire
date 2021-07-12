@@ -7,10 +7,6 @@
 class FieldTest : public ::testing::TestWithParam<int>
 {
 public:
-  FieldTest() = default;
-  ~FieldTest() = default;
-
-public:
   // Экземпляр класса Field
   Field field;
   // Ожидаемое поле
@@ -20,22 +16,25 @@ public:
 };
 
 //! Подаваемые значения для выбора режима
-INSTANTIATE_TEST_SUITE_P(ModeL, FieldTest, ::testing::Values(0, 1));
+INSTANTIATE_TEST_SUITE_P(ModeL,
+                         FieldTest,
+                         ::testing::Values(COMMON::ETypeField::ENGLISH,
+                                           COMMON::ETypeField::EUROPEAN));
 
-TEST_P(FieldTest, CheckingTheCreationOfFields)
+TEST_P(FieldTest, CheckingPositiveTheCreationOfFields)
 {
   // Получение возможнных параметров
   auto xmode = static_cast<COMMON::ETypeField>(GetParam());
-  // Создание поля с возможнными параметрами
-  bool flag_create = field.Create(COMMON::ETypeField::ENGLISH);
+  // Создание поля с для английской версии
+  ASSERT_TRUE(field.Create(xmode));
   // Получить это поле
   field_expected = field.GetField();
-  ASSERT_EQ(1, flag_create);
+  // Проверяем соответствие размеров
+  ASSERT_EQ(field_expected.size(), Size);
+}
 
-  if (field_expected.size() == Size)
-    flag_create = 1;
-  else
-    flag_create = 0;
-
-  ASSERT_EQ(1, flag_create);
+TEST_F(FieldTest, CheckingNegativeTheCreationOfFields)
+{
+  // Создание поля с неверным параметром
+  ASSERT_FALSE(field.Create(static_cast<COMMON::ETypeField>(3)));
 }
