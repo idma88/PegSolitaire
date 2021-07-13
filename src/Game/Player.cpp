@@ -10,6 +10,11 @@ Player::~Player() {}
 bool
 Player::SetName(const std::string name)
 {
+  // Проверяем пустая ли строка
+  if (name.empty()) {
+    LOG(ERROR) << "Empty name!";
+    return false;
+  }
   // Записываем имя
   m_name = name;
   return true;
@@ -18,16 +23,22 @@ Player::SetName(const std::string name)
 bool
 Player::SetEssence(const COMMON::EPlayerType type)
 {
+  // Проверка типа
+  if ((type != COMMON::EPlayerType::HUMAN) &&
+      (type != COMMON::EPlayerType::COMPUTER)) {
+    LOG(ERROR) << "Invalid field type value in SetEssence()!";
+    return false;
+  }
   // Устанавливаем сущность
   m_essence = type;
   return true;
 }
 
 void
-Player::AddPoints(const uint32_t score)
+Player::AddPoints(const uint16_t score)
 {
   // Обновляем счёт
-  m_score = m_score + m_score;
+  m_score += score;
 }
 
 std::string
@@ -44,7 +55,7 @@ Player::GetEssence()
   return m_essence;
 }
 
-uint32_t
+uint16_t
 Player::GetScore()
 {
   // Возвращаем счёт

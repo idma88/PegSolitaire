@@ -15,4 +15,8 @@ public:
   CoreGame();
   // Деструктор
   ~CoreGame();
+
+public:
+  // 
+  void CreateNewGame();
 };

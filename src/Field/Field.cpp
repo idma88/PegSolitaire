@@ -13,7 +13,7 @@ Field::Create(COMMON::ETypeField type)
   // Проверка типа поля
   if ((type != COMMON::ETypeField::ENGLISH) &&
       (type != COMMON::ETypeField::EUROPEAN)) {
-    LOG(ERROR) << "Invalid field type value!";
+    LOG(ERROR) << "Invalid field type value in Create()!";
     return false;
   }
 

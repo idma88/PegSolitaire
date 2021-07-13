@@ -15,7 +15,7 @@ public:
   const int Size = 49;
 };
 
-//! Подаваемые значения для выбора режима
+// Подаваемые значения для выбора режима
 INSTANTIATE_TEST_SUITE_P(ModeL,
                          FieldTest,
                          ::testing::Values(COMMON::ETypeField::ENGLISH,

@@ -21,13 +21,13 @@ public:
   // Метод установки сущности
   bool SetEssence(const COMMON::EPlayerType type);
   // Добавить кол-во съеденых фишек
-  void AddPoints(const uint32_t score);
+  void AddPoints(const uint16_t score);
   // Получить информация Имя
   std::string GetName();
   // Получить сущность
   COMMON::EPlayerType GetEssence();
   // Получить счёт
-  uint32_t GetScore();
+  uint16_t GetScore();
 
 private:
   // Имя игрока

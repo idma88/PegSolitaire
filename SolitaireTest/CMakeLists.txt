@@ -24,10 +24,14 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
 
 endif()
 
-set(field_dir ../src/Field/)
+set(field_dir_test ../src/Field/)
+set(common_dir_test ../src/Common/)
+set(game_dir_test ../src/Game/)
 
-file(GLOB_RECURSE common_sources_test ${field_dir}*.cpp)  
-file(GLOB_RECURSE common_headers_test ${field_dir}*.h)
+file(GLOB_RECURSE common_sources_test ${field_dir_test}*.cpp ${common_dir_test}*.cpp 
+                                                                ${game_dir_test}*.cpp )  
+file(GLOB_RECURSE common_headers_test ${field_dir_test}*.h ${common_dir_test}*.h 
+                                                                ${game_dir_test}*.h)
 
 file(GLOB_RECURSE TEST_SRC_SOURCE ${PROJECT_SOURCE_DIR} *.cpp)
 file(GLOB_RECURSE TEST_SRC_HEADERS ${PROJECT_SOURCE_DIR} *.h)
