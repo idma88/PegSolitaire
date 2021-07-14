@@ -1,8 +1,11 @@
 #include "Player.h"
 
-Player::Player()
-  : m_score(0)
-  , m_essence(COMMON::EPlayerType::HUMAN)
+Player::Player(const std::string& name,
+               uint16_t score,
+               COMMON::EPlayerType type)
+  : m_name(name)
+  , m_score(score)
+  , m_essence(type)
 {}
 
 Player::~Player() {}
@@ -12,7 +15,7 @@ Player::SetName(const std::string name)
 {
   // Проверяем пустая ли строка
   if (name.empty()) {
-    LOG(ERROR) << "Empty name!";
+    LOG(ERROR) << "Player::SetName : Empty name!";
     return false;
   }
   // Записываем имя
@@ -26,7 +29,8 @@ Player::SetEssence(const COMMON::EPlayerType type)
   // Проверка типа
   if ((type != COMMON::EPlayerType::HUMAN) &&
       (type != COMMON::EPlayerType::COMPUTER)) {
-    LOG(ERROR) << "Invalid field type value in SetEssence()!";
+    LOG(ERROR)
+      << "Player::SetEssence : Invalid field type value in SetEssence()!";
     return false;
   }
   // Устанавливаем сущность
@@ -34,11 +38,28 @@ Player::SetEssence(const COMMON::EPlayerType type)
   return true;
 }
 
-void
-Player::AddPoints(const uint16_t score)
+bool
+Player::SetBeginScore(const uint16_t score)
 {
+  if (score > m_max_score) {
+    LOG(ERROR) << "Player::SetBeginScore : Ivalid begin data score < 0 ";
+    return false;
+  }
   // Обновляем счёт
-  m_score += score;
+  m_score = score;
+  return true;
+}
+
+bool
+Player::AddPoints(const int16_t score)
+{
+  if (((int16_t)m_score + score) < 0) {
+    LOG(ERROR) << "Player::AddPoints : Ivalid data score < 0 ";
+    return false;
+  }
+  // Обновляем счёт
+  m_score = (int16_t)m_score + score;
+  return true;
 }
 
 std::string

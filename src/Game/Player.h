@@ -11,7 +11,9 @@ class Player
 {
 public:
   // Конструктор
-  Player();
+  Player(const std::string& name = "User",
+         uint16_t score = 0,
+         COMMON::EPlayerType type = COMMON::EPlayerType::HUMAN);
   // Деструктор
   ~Player();
 
@@ -20,8 +22,10 @@ public:
   bool SetName(const std::string name);
   // Метод установки сущности
   bool SetEssence(const COMMON::EPlayerType type);
+  // Установить начальный счёт
+  bool SetBeginScore(const uint16_t score);
   // Добавить кол-во съеденых фишек
-  void AddPoints(const uint16_t score);
+  bool AddPoints(const int16_t score);
   // Получить информация Имя
   std::string GetName();
   // Получить сущность
@@ -36,4 +40,6 @@ private:
   COMMON::EPlayerType m_essence = COMMON::EPlayerType::HUMAN;
   // Колличество съеденых или оставшихся фишек
   uint32_t m_score = 0;
+  // Максимально возможное кол-во очков 64х64 - 2 = 4094
+  uint16_t m_max_score = 4094;
 };

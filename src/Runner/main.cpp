@@ -1,6 +1,7 @@
 #include "../Common/Common.h"
 #include "../Field/Field.h"
 #include "../Game/CoreGame.h"
+#include "../Game/Player.h"
 #include <glog/logging.h>
 #include <iostream>
 
