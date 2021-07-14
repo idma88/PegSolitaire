@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 3.10.2)
 
 project(SolitaireTest)
 
+if (MSVC)
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+endif()
+
 find_library(GTEST_LIB gtestd ${CMAKE_BINARY_DIR}/lib/Debug)
 
 if(GTEST_LIB)
@@ -33,8 +38,8 @@ file(GLOB_RECURSE common_sources_test ${field_dir_test}*.cpp ${common_dir_test}*
 file(GLOB_RECURSE common_headers_test ${field_dir_test}*.h ${common_dir_test}*.h 
                                                                 ${game_dir_test}*.h)
 
-file(GLOB_RECURSE TEST_SRC_SOURCE ${PROJECT_SOURCE_DIR} *.cpp)
-file(GLOB_RECURSE TEST_SRC_HEADERS ${PROJECT_SOURCE_DIR} *.h)
+file(GLOB_RECURSE TEST_SRC_SOURCE ${PROJECT_SOURCE_DIR}/*.cpp)
+file(GLOB_RECURSE TEST_SRC_HEADERS ${PROJECT_SOURCE_DIR}/*.h)
 
 set(sources_test
     ${TEST_SRC_SOURCE}
@@ -42,7 +47,6 @@ set(sources_test
     ${common_sources_test}
     ${common_headers_test}
 )
-
 
 find_library(GLOG_LIB glogd ${CMAKE_BINARY_DIR}/glog/Debug)
 if(GLOG_LIB)
