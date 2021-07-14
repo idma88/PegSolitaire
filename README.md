@@ -1,4 +1,4 @@
-# Solitaire Game
+# Solitaire Game [![GitHub Action - CMake](https://github.com/DreamOn-DAL/PegSolitaire/actions/workflows/cmake.yml/badge.svg)](https://github.com/DreamOn-DAL/PegSolitaire/actions/workflows/cmake.yml)
 
 Описание
 
