@@ -3,10 +3,11 @@
 Player::Player(const std::string& name,
                uint16_t score,
                COMMON::EPlayerType type)
-  : m_name(name)
-  , m_score(score)
-  , m_essence(type)
-{}
+{
+  SetName(name);
+  SetBeginScore(score);
+  SetEssence(type);
+}
 
 Player::~Player() {}
 
