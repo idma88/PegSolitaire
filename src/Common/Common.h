@@ -26,4 +26,10 @@ enum class EPlayerType
   HUMAN = 0,
   COMPUTER = 1
 };
+
+enum class EGameMode
+{
+  SINGLE = 0,
+  MULTIPLAYER = 1
+};
 }

@@ -42,7 +42,7 @@ Player::SetEssence(const COMMON::EPlayerType type)
 bool
 Player::SetBeginScore(const uint16_t score)
 {
-  if (score > m_max_score) {
+  if (score > MAX_SCORE) {
     LOG(ERROR) << "Player::SetBeginScore : Ivalid begin data score < 0 ";
     return false;
   }

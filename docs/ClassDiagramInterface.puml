@@ -1,0 +1,65 @@
+@startuml Dima
+
+skinparam classAttributeIconSize 0
+skinparam backgroundcolor AntiqueWhite/Green
+skinparam classBackgroundColor White|Green
+
+
+class InterfaceLogic
+{
+
+}
+
+class SingleLogic
+{
+
+}
+
+class MultiplayerLogic
+{
+
+}
+
+InterfaceLogic <-- SingleLogic
+InterfaceLogic <-- MultiplayerLogic
+
+
+@enduml
+
+@startuml Alex
+
+skinparam classAttributeIconSize 0
+skinparam backgroundcolor AntiqueWhite/Green
+skinparam classBackgroundColor White|Green
+
+
+abstract InterfaceGui
+{
+
+}
+
+
+enum EPlayerType:
+
+class CoreGame
+{
+    
+}
+
+class Field
+{
+
+}
+
+class Player
+{
+
+}
+
+InterfaceGui <-- CoreGame
+CoreGame *- Field
+CoreGame *-- Player
+
+
+
+@enduml

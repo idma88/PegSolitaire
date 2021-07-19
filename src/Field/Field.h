@@ -31,13 +31,13 @@ public:
 
 public:
   // Максимальная ширина поля
-  const uint8_t max_width = 64;
+  static const uint8_t MAX_WIDTH = 64;
   // Максимальная высота поля
-  const uint8_t max_height = 64;
+  static const uint8_t MAX_HEIGHT = 64;
   // Максимальная ширина поля
-  const uint8_t min_width = 7;
+  static const uint8_t MIN_WIDTH = 7;
   // Максимальная высота поля
-  const uint8_t min_height = 7;
+  static const uint8_t MIN_HEIGHT = 7;
 
 private:
   // Ширина поля

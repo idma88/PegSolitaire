@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Common/Common.h"
+#include "../Field/Field.h"
 #include "stdint.h"
 
 #include <glog/logging.h>
@@ -40,6 +41,7 @@ private:
   COMMON::EPlayerType m_essence = COMMON::EPlayerType::HUMAN;
   // Колличество съеденых или оставшихся фишек
   uint32_t m_score = 0;
-  // Максимально возможное кол-во очков 64х64 - 2 = 4094
-  uint16_t m_max_score = 4094;
+  // Максимально возможное кол-во очков MAX_WIDTH х MAX_HEIGHT - 2
+  static constexpr uint16_t MAX_SCORE =
+    ((uint16_t)Field::MAX_WIDTH * (uint16_t)Field::MAX_HEIGHT) - 2;
 };

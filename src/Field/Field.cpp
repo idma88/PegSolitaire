@@ -18,8 +18,8 @@ Field::Create(COMMON::ETypeField type)
   }
 
   // Устанавливаем значения по умолчанию
-  m_width = 7;
-  m_height = 7;
+  m_width = MIN_WIDTH;
+  m_height = MIN_HEIGHT;
 
   // Меняем длину вектора под размер поля
   m_field.resize(m_width * m_height);
