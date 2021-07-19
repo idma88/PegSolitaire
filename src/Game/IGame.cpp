@@ -70,6 +70,7 @@ IGame::GetPlayerList()
   /*
   code
   */
+  return 0;
 }
 
 bool
@@ -78,4 +79,5 @@ IGame::SubmitActivity(uint8_t num_player)
   /*
   code
   */
+  return false;
 }
