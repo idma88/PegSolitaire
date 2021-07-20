@@ -39,36 +39,108 @@ IGame::SetField(std::vector<COMMON::ECell> field, uint8_t width, uint8_t height)
 bool
 IGame::CheckMove(uint8_t x, uint8_t y)
 {
-  // ***************ПОМЕТКА****************
-  // Предварительные проверки, необходимо добавить граничные условия, понять
-  // зависимость и сократить код!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  //                         x
-  //                         o
-  //                     x o i o x
-  //                         o
-  //                         x
-  //
-  // Проверяет возможен ли переход от i к x при условии что o - установлена
-  // фишка, x - свободное пространство, i - выбранная фишка
+  std::vector<COMMON::ECell> sample_vec = { COMMON::ECell::SET,
+                                            COMMON::ECell::SET,
+                                            COMMON::ECell::FREE };
 
-  // Проверка для горизонтали
-  if ((m_copy_field[y * m_copy_width + x + 2] == COMMON::ECell::FREE) &&
-      (m_copy_field[x + 1] == COMMON::ECell::SET))
-    return true;
-  if ((m_copy_field[y * m_copy_width + x - 2] == COMMON::ECell::FREE) &&
-      (m_copy_field[y * m_copy_width + x - 1] == COMMON::ECell::SET))
-    return true;
-  // Проверка для вертикали
-  if ((m_copy_field[y * m_copy_width + x - m_copy_width * 2] ==
-       COMMON::ECell::FREE) &&
-      (m_copy_field[y * m_copy_width + x - m_copy_width] == COMMON::ECell::SET))
-    return true;
-  if ((m_copy_field[y * m_copy_width + x + m_copy_width * 2] ==
-       COMMON::ECell::FREE) &&
-      (m_copy_field[y * m_copy_width + x + m_copy_width] == COMMON::ECell::SET))
-    return true;
+  std::vector<COMMON::ECell> temp_vec = { COMMON::ECell::FREE,
+                                          COMMON::ECell::FREE,
+                                          COMMON::ECell::FREE };
 
-  return false;
+  // 1 - куда возможен ход 0 - не возможен
+  struct ChanceDirect
+  {
+    uint8_t RIGHT = 0;
+    uint8_t LEFT = 0;
+    uint8_t UP = 0;
+    uint8_t DOWN = 0;
+  };
+
+  ChanceDirect _chance_direct;
+
+  if (y * m_copy_width + x + 2 < Field::MAX_WIDTH * Field::MAX_HEIGHT) {
+    temp_vec[0] = m_copy_field[y * m_copy_width + x];
+    temp_vec[1] = m_copy_field[y * m_copy_width + x + 1];
+    temp_vec[2] = m_copy_field[y * m_copy_width + x + 2];
+  } else {
+    _chance_direct.RIGHT = 0;
+  }
+
+  if (temp_vec == sample_vec)
+    _chance_direct.RIGHT = 1;
+
+  temp_vec = { COMMON::ECell::FREE, COMMON::ECell::FREE, COMMON::ECell::FREE };
+
+  if (y * m_copy_width + x - 2 >= 0) {
+    temp_vec[0] = m_copy_field[y * m_copy_width + x];
+    temp_vec[1] = m_copy_field[y * m_copy_width + x - 1];
+    temp_vec[2] = m_copy_field[y * m_copy_width + x - 2];
+  } else {
+    _chance_direct.LEFT = 0;
+  }
+
+  if (temp_vec == sample_vec)
+    _chance_direct.LEFT = 1;
+
+  temp_vec = { COMMON::ECell::FREE, COMMON::ECell::FREE, COMMON::ECell::FREE };
+
+  if (y * m_copy_width + x - m_copy_width * 2 >= 0) {
+    temp_vec[0] = m_copy_field[y * m_copy_width + x];
+    temp_vec[1] = m_copy_field[y * m_copy_width + x - m_copy_width];
+    temp_vec[2] = m_copy_field[y * m_copy_width + x - m_copy_width * 2];
+  } else {
+    _chance_direct.UP = 0;
+  }
+
+  if (temp_vec == sample_vec)
+    _chance_direct.UP = 1;
+
+  temp_vec = { COMMON::ECell::FREE, COMMON::ECell::FREE, COMMON::ECell::FREE };
+
+  if (y * m_copy_width + x + m_copy_width * 2 <
+      Field::MAX_WIDTH * Field::MAX_HEIGHT) {
+    temp_vec[0] = m_copy_field[y * m_copy_width + x];
+    temp_vec[1] = m_copy_field[y * m_copy_width + x + m_copy_width];
+    temp_vec[2] = m_copy_field[y * m_copy_width + x + m_copy_width * 2];
+  } else {
+    _chance_direct.UP = 0;
+  }
+  if (temp_vec == sample_vec)
+    _chance_direct.UP = 1;
+
+  temp_vec = { COMMON::ECell::FREE, COMMON::ECell::FREE, COMMON::ECell::FREE };
+}
+
+// ***************ПОМЕТКА****************
+// Предварительные проверки, необходимо добавить граничные условия, понять
+// зависимость и сократить код!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//                         x
+//                         o
+//                     x o i o x
+//                         o
+//                         x
+//
+// Проверяет возможен ли переход от i к x при условии что o - установлена
+// фишка, x - свободное пространство, i - выбранная фишка
+
+// Проверка для горизонтали
+if ((m_copy_field[y * m_copy_width + x + 2] == COMMON::ECell::FREE) &&
+    (m_copy_field[x + 1] == COMMON::ECell::SET))
+  return true;
+if ((m_copy_field[y * m_copy_width + x - 2] == COMMON::ECell::FREE) &&
+    (m_copy_field[y * m_copy_width + x - 1] == COMMON::ECell::SET))
+  return true;
+// Проверка для вертикали
+if ((m_copy_field[y * m_copy_width + x - m_copy_width * 2] ==
+     COMMON::ECell::FREE) &&
+    (m_copy_field[y * m_copy_width + x - m_copy_width] == COMMON::ECell::SET))
+  return true;
+if ((m_copy_field[y * m_copy_width + x + m_copy_width * 2] ==
+     COMMON::ECell::FREE) &&
+    (m_copy_field[y * m_copy_width + x + m_copy_width] == COMMON::ECell::SET))
+  return true;
+
+return false;
 }
 
 bool
@@ -131,3 +203,20 @@ IGame::SubmitActivity(uint8_t num_player)
   m_active_user = num_player;
   return true;
 }
+
+// O  O  O  O  O  O  O
+// O  O  O  O  O  O  O
+// O  O  O  O  O  O  O
+// O  O  O  O  O  O  O
+// O  O  O  O  O  O  O
+// O  O  O  O  O  O  O
+// O  O  O  O  O  O  O
+
+// ixOOOOO | OOOOOOO | OOOOOOO | OOOOOOO | OOOOOOO | OOOOOOO | OOOOOOO
+// xixxOOO | OOOOOOO | OOOOOOO | OOOOOOO | OOOOOOO | OOOOOOO | OOOOOOO
+
+// OOOOOxi | OOOOOOO | OOOOOOO | OOOOOOO | OOOOOOO | OOOOOOO | OOOOOOO
+// OOOOOOx | ixOOOOO | OOOOOOO | OOOOOOO | OOOOOOO | OOOOOOO | OOOOOOO
+
+// OOOOOOO | OOOOOOO | OOOOOOO | OOOOOOO | OOOOOOO | OOOOOxi | xOOOOOO
+// OOOOOOO | OOOOOOO | OOOOOOO | OOOOOOO | OOOOOOO | OOOOOOO | OOOOOxi
