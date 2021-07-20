@@ -13,13 +13,13 @@ Field::Create(COMMON::ETypeField type)
   // Проверка типа поля
   if ((type != COMMON::ETypeField::ENGLISH) &&
       (type != COMMON::ETypeField::EUROPEAN)) {
-    LOG(ERROR) << "Invalid field type value in Create()!";
+    LOG(ERROR) << "Field::Create : Invalid field type value in Create()!";
     return false;
   }
 
   // Устанавливаем значения по умолчанию
-  m_width = 7;
-  m_height = 7;
+  m_width = MIN_WIDTH;
+  m_height = MIN_HEIGHT;
 
   // Меняем длину вектора под размер поля
   m_field.resize(m_width * m_height);
@@ -77,13 +77,14 @@ Field::Create(uint8_t width,
 {
   // Проверяем вектор на наличие данных
   if (pattern.size() == 0) {
-    LOG(ERROR) << "There is no data!";
+    LOG(ERROR) << "Field::Create : There is no data!";
     return false;
   }
 
   // Проверяем вектор на соответствие размера
   if (pattern.size() != (width * height)) {
-    LOG(ERROR) << "Vector size does not fit the generated field!";
+    LOG(ERROR)
+      << "Field::Create : Vector size does not fit the generated field!";
     return false;
   }
 
@@ -91,7 +92,7 @@ Field::Create(uint8_t width,
         return (item == COMMON::ECell::FREE) || (item == COMMON::ECell::LOCK) ||
                (item == COMMON::ECell::SET);
       })) {
-    LOG(ERROR) << "Invalid data type in pattern!";
+    LOG(ERROR) << "Field::Create : Invalid data type in pattern!";
     return false;
   }
 
@@ -108,13 +109,13 @@ Field::SetCell(uint8_t x_field, uint8_t y_field, const COMMON::ECell value)
   // Проверка типа ячейки
   if ((value != COMMON::ECell::FREE) && (value != COMMON::ECell::LOCK) &&
       (value != COMMON::ECell::SET)) {
-    LOG(ERROR) << "Invalid field type value!";
+    LOG(ERROR) << "Field::SetCell : Invalid field type value!";
     return false;
   }
 
   // Проверяем диапазон
   if ((m_width <= x_field) || (m_height <= y_field)) {
-    LOG(ERROR) << "The entered coordinates are out of range!";
+    LOG(ERROR) << "Field::SetCell : The entered coordinates are out of range!";
     return false;
   }
 
