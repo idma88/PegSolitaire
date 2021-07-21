@@ -32,4 +32,12 @@ enum class EGameMode
   SINGLE = 0,
   MULTIPLAYER = 1
 };
+
+enum class EDirect
+{
+  RIGHT = 0,
+  LEFT = 1,
+  UP = 2,
+  DOWN = 3,
+};
 }
