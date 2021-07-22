@@ -30,21 +30,16 @@ IGame::CreateNewGame()
 }
 
 bool
-IGame::MakingMove(uint8_t x, uint8_t y, std::vector<COMMON::EDirect> directions)
+IGame::DoMove(uint8_t x, uint8_t y, std::vector<COMMON::EDirect> directions)
 {
   // Проходимся по списку направлений и меняем фишки
   for (auto dir = directions.begin(); dir != directions.end(); ++dir) {
     // В случае если нет возможности куда то походить будет false
-    if (!MakingMoveField(x, y, *dir, m_field))
+    if (!DoMove(x, y, *dir, m_field))
       return false;
-    // Меняем координату X
-    x += (*dir == COMMON::EDirect::RIGHT
-            ? 2
-            : (*dir == COMMON::EDirect::LEFT ? -2 : 0));
-    // Меняем координату Y
-    y +=
-      (*dir == COMMON::EDirect::DOWN ? 2
-                                     : (*dir == COMMON::EDirect::UP ? -2 : 0));
+    // Сдвигаем координаты на ход который походили
+    if (!MoveShift(x, y, *dir))
+      return false;
   }
 
   return true;
@@ -64,75 +59,38 @@ IGame::CheckMove(uint8_t x, uint8_t y, std::vector<COMMON::EDirect> directions)
 
   for (auto dir = directions.begin(); dir != directions.end(); ++dir) {
     // В случае если нет возможности куда то походить будет false
-    if (!MakingMoveField(x, y, *dir, copy_field))
+    if (!DoMove(x, y, *dir, copy_field))
       return false;
-    // Меняем координату X
-    x += (*dir == COMMON::EDirect::RIGHT
-            ? 2
-            : (*dir == COMMON::EDirect::LEFT ? -2 : 0));
-    // Меняем координату Y
-    y +=
-      (*dir == COMMON::EDirect::DOWN ? 2
-                                     : (*dir == COMMON::EDirect::UP ? -2 : 0));
+    // Сдвигаем координаты на ход который походили
+    if (!MoveShift(x, y, *dir))
+      return false;
   }
 
   return true;
 }
 
 bool
-IGame::CheckMovingOneCell(uint8_t x,
-                          uint8_t y,
-                          COMMON::EDirect direction,
-                          Field& field)
+IGame::CheckMove(uint8_t x, uint8_t y, COMMON::EDirect direction, Field& field)
 {
-  bool cell1, cell2, cell3;
+  int8_t xShift = 0;
+  int8_t yShift = 0;
 
-  switch (direction) {
-    case COMMON::EDirect::RIGHT:
-      // Проверим соответствие фишки, в случае выхода за диапазон будет false
-      cell1 = field.GetCell(x, y) == COMMON::ECell::SET;
-      cell2 = field.GetCell(x + 1, y) == COMMON::ECell::SET;
-      cell3 = field.GetCell(x + 2, y) == COMMON::ECell::FREE;
-      // Перемножим результат соответствия
-      return cell1 && cell2 && cell3;
-      break;
-    case COMMON::EDirect::LEFT:
-      // Проверим соответствие фишки, в случае выхода за диапазон будет false
-      cell1 = field.GetCell(x, y) == COMMON::ECell::SET;
-      cell2 = field.GetCell(x - 1, y) == COMMON::ECell::SET;
-      cell3 = field.GetCell(x - 2, y) == COMMON::ECell::FREE;
-      // Перемножим результат соответствия
-      return cell1 && cell2 && cell3;
-      break;
-    case COMMON::EDirect::UP:
-      // Проверим соответствие фишки, в случае выхода за диапазон будет false
-      cell1 = field.GetCell(x, y) == COMMON::ECell::SET;
-      cell2 = field.GetCell(x, y - 1) == COMMON::ECell::SET;
-      cell3 = field.GetCell(x, y - 2) == COMMON::ECell::FREE;
-      // Перемножим результат соответствия
-      return cell1 && cell2 && cell3;
-      break;
-    case COMMON::EDirect::DOWN:
-      // Проверим соответствие фишки, в случае выхода за диапазон будет false
-      cell1 = field.GetCell(x, y) == COMMON::ECell::SET;
-      cell2 = field.GetCell(x, y + 1) == COMMON::ECell::SET;
-      cell3 = field.GetCell(x, y + 2) == COMMON::ECell::FREE;
-      // Перемножим результат соответствия
-      return cell1 && cell2 && cell3;
-      break;
-  }
+  if (!CheckShift(xShift, yShift, direction))
+    return false;
 
-  return false;
+  // Проверим соответствие фишки, в случае выхода за диапазон будет false
+  return (field.GetCell(x, y) == COMMON::ECell::SET) &&
+         (field.GetCell(x + xShift, y + yShift) == COMMON::ECell::SET) &&
+         (field.GetCell(x + 2 * xShift, y + 2 * yShift) == COMMON::ECell::FREE);
 }
 
 bool
-IGame::MakingMoveField(uint8_t x,
-                       uint8_t y,
-                       COMMON::EDirect direction,
-                       Field& field)
+IGame::DoMove(uint8_t x, uint8_t y, COMMON::EDirect direction, Field& field)
 {
   uint8_t width = m_field.GetWidth();
   uint8_t height = m_field.GetHeight();
+  int8_t xShift = 0;
+  int8_t yShift = 0;
 
   // Проверяем диапазон
   if ((width <= x) || (height <= y)) {
@@ -141,34 +99,60 @@ IGame::MakingMoveField(uint8_t x,
     return false;
   }
 
+  if (!CheckShift(xShift, yShift, direction))
+    return false;
+
+  field.SetCell(x, y, COMMON::ECell::FREE);
+  field.SetCell(x + xShift, y + yShift, COMMON::ECell::FREE);
+  field.SetCell(x + 2 * xShift, y + 2 * yShift, COMMON::ECell::SET);
+
+  return true;
+}
+
+bool
+IGame::MoveShift(uint8_t& x, uint8_t& y, COMMON::EDirect direction) const
+{
   switch (direction) {
     case COMMON::EDirect::RIGHT:
-      field.SetCell(x, y, COMMON::ECell::FREE);
-      field.SetCell(x + 1, y, COMMON::ECell::FREE);
-      field.SetCell(x + 2, y, COMMON::ECell::SET);
-      return true;
+      x += 2;
       break;
     case COMMON::EDirect::LEFT:
-      field.SetCell(x, y, COMMON::ECell::FREE);
-      field.SetCell(x - 1, y, COMMON::ECell::FREE);
-      field.SetCell(x - 2, y, COMMON::ECell::SET);
-      return true;
+      x -= 2;
       break;
     case COMMON::EDirect::UP:
-      field.SetCell(x, y, COMMON::ECell::FREE);
-      field.SetCell(x, y - 1, COMMON::ECell::FREE);
-      field.SetCell(x, y - 2, COMMON::ECell::SET);
-      return true;
+      y -= 2;
       break;
     case COMMON::EDirect::DOWN:
-      field.SetCell(x, y, COMMON::ECell::FREE);
-      field.SetCell(x, y + 1, COMMON::ECell::FREE);
-      field.SetCell(x, y + 2, COMMON::ECell::SET);
-      return true;
+      y += 2;
       break;
+    default:
+      return false;
   }
 
-  return false;
+  return true;
+}
+
+bool
+IGame::CheckShift(int8_t& x, int8_t& y, COMMON::EDirect direction) const
+{
+  switch (direction) {
+    case COMMON::EDirect::RIGHT:
+      x = 1;
+      break;
+    case COMMON::EDirect::LEFT:
+      x = -1;
+      break;
+    case COMMON::EDirect::UP:
+      y = -1;
+      break;
+    case COMMON::EDirect::DOWN:
+      y = 1;
+      break;
+    default:
+      return false;
+  }
+
+  return true;
 }
 
 bool
@@ -182,8 +166,7 @@ IGame::IsGameOver()
   for (int i(0); i < width; i++) {
     for (int j(0); j < height; j++) {
       for (int direct(0); direct < 4; direct++) {
-        if (CheckMovingOneCell(
-              i, j, static_cast<COMMON::EDirect>(direct), m_field))
+        if (CheckMove(i, j, static_cast<COMMON::EDirect>(direct), m_field))
           return true;
       }
     }

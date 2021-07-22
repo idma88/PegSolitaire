@@ -26,12 +26,10 @@ public:
   bool SetGameMode(COMMON::EGameMode mode);
   // Создание новой игры
   virtual bool CreateNewGame();
-  // Выполнение хода
-  bool MakingMove(uint8_t x,
-                  uint8_t y,
-                  std::vector<COMMON::EDirect> directions);
   // Загрузить копию поля
   void SetField(Field field);
+  // Выполнение хода
+  bool DoMove(uint8_t x, uint8_t y, std::vector<COMMON::EDirect> directions);
   // Проверка возможности указанного хода/последовательности ходов
   bool CheckMove(uint8_t x, uint8_t y, std::vector<COMMON::EDirect> directions);
   // Проверка конца игры
@@ -45,15 +43,13 @@ public:
 
 private:
   // Проверить одиночный ход
-  bool CheckMovingOneCell(uint8_t x,
-                          uint8_t y,
-                          COMMON::EDirect direction,
-                          Field& field);
+  bool CheckMove(uint8_t x, uint8_t y, COMMON::EDirect direction, Field& field);
   // Выполнить ход в копии поля
-  bool MakingMoveField(uint8_t x,
-                       uint8_t y,
-                       COMMON::EDirect direction,
-                       Field& field);
+  bool DoMove(uint8_t x, uint8_t y, COMMON::EDirect direction, Field& field);
+  // Сдвинуть координаты на ход куда походили
+  bool MoveShift(uint8_t& x, uint8_t& y, COMMON::EDirect direction) const;
+  // Установить вспомогательные координаты в зависимости от направления
+  bool CheckShift(int8_t& x, int8_t& y, COMMON::EDirect direction) const;
 
 private:
   // Копия экземпляра Field
