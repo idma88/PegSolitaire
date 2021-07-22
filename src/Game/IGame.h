@@ -21,27 +21,33 @@ public:
 
 public:
   // Получить информацию о игровом режиме
-  COMMON::EGameMode GetGameModeInformation();
+  COMMON::EGameMode GetGameMode() const;
   // Установить игровой режим
-  void SetGameMode(COMMON::EGameMode mode);
+  bool SetGameMode(COMMON::EGameMode mode);
   // Создание новой игры
   virtual bool CreateNewGame();
   // Выполнение хода
-  virtual bool MakingMove();
+  bool MakingMove(uint8_t x,
+                  uint8_t y,
+                  std::vector<COMMON::EDirect> directions);
   // Загрузить копию поля
   void SetField(Field field);
   // Проверка возможности указанного хода/последовательности ходов
-  bool CheckMove(uint8_t x, uint8_t y, COMMON::EDirect direct);
+  bool CheckMove(uint8_t x, uint8_t y, std::vector<COMMON::EDirect> directions);
   // Проверка конца игры
-  bool CheckTheEndOfTheGame();
+  bool IsGameOver();
   // Установить список игроков
   void SetPlayerList(std::vector<Player> lists_player);
   // Получить список игроков
-  std::vector<Player> GetPlayerList();
-  // Активный пользователь (тот, которому предоставлен ход)
-  bool SubmitActivity(uint8_t num_player);
+  std::vector<Player> GetPlayerList() const;
   // Получить номер актиавного пользователя
-  uint8_t GetSubmitActivity();
+  uint8_t GetActivePlayerId() const;
+
+private:
+  // Проверить одиночный ход
+  bool CheckMoveOne(uint8_t x, uint8_t y, COMMON::EDirect direction);
+  // Выполнить ход в копии поля
+  bool MakingMoveCopyField(uint8_t x, uint8_t y, COMMON::EDirect direction);
 
 private:
   // Копия экземпляра Field
@@ -52,4 +58,6 @@ private:
   uint8_t m_active_user = 0;
   // Режим игры
   COMMON::EGameMode m_mode_game;
+  // Копия поля
+  std::vector<COMMON::ECell> m_copy_field;
 };

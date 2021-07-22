@@ -28,11 +28,11 @@ public:
   // Добавить кол-во съеденых фишек
   bool AddPoints(const int16_t score);
   // Получить информация Имя
-  std::string GetName();
+  std::string GetName() const;
   // Получить сущность
-  COMMON::EPlayerType GetEssence();
+  COMMON::EPlayerType GetEssence() const;
   // Получить счёт
-  uint16_t GetScore();
+  uint16_t GetScore() const;
 
 private:
   // Имя игрока

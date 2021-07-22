@@ -64,21 +64,21 @@ Player::AddPoints(const int16_t score)
 }
 
 std::string
-Player::GetName()
+Player::GetName() const
 {
   // Возвращаем имя
   return m_name;
 }
 
 COMMON::EPlayerType
-Player::GetEssence()
+Player::GetEssence() const
 {
   // Возвращаем сущность
   return m_essence;
 }
 
 uint16_t
-Player::GetScore()
+Player::GetScore() const
 {
   // Возвращаем счёт
   return m_score;

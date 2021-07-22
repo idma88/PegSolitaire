@@ -126,45 +126,34 @@ Field::SetCell(uint8_t x_field, uint8_t y_field, const COMMON::ECell value)
 }
 
 std::vector<COMMON::ECell>
-Field::GetField()
+Field::GetField() const
 {
   // Возвращаем поле
   return m_field;
 }
 
 uint8_t
-Field::GetWidth()
+Field::GetWidth() const
 {
   // Возвращаем ширину поля
   return m_width;
 }
 
 uint8_t
-Field::GetHeight()
+Field::GetHeight() const
 {
   // Возвращаем высоту поля
   return m_height;
 }
 
-bool
-Field::CheckCell(uint8_t x, uint8_t y, const COMMON::ECell value)
+COMMON::ECell
+Field::GetCell(uint8_t x, uint8_t y) const
 {
-  // Проверка типа ячейки
-  if ((value != COMMON::ECell::FREE) && (value != COMMON::ECell::LOCK) &&
-      (value != COMMON::ECell::SET)) {
-    LOG(ERROR) << "Field::SetCell : Invalid field type value!";
-    return false;
-  }
-
   // Проверяем диапазон
   if ((m_width <= x) || (m_height <= y)) {
-    LOG(ERROR) << "Field::SetCell : The entered coordinates are out of range!";
-    return false;
+    LOG(ERROR) << "Field::GetCell : The entered coordinates are out of range!";
+    return COMMON::ECell::LOCK;
   }
 
-  // Если в координате соответствует тип фишки, то вернуть true
-  if (m_field[y * m_width + x] == value)
-    return true;
-
-  return false;
+  return m_field[y * m_width + x];
 }
