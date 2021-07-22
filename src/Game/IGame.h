@@ -45,15 +45,15 @@ public:
 
 private:
   // Проверить одиночный ход
-  bool CheckMoveOne(uint8_t x,
-                    uint8_t y,
-                    COMMON::EDirect direction,
-                    Field& field);
+  bool CheckMovingOneCell(uint8_t x,
+                          uint8_t y,
+                          COMMON::EDirect direction,
+                          Field& field);
   // Выполнить ход в копии поля
-  bool MakingMoveCopyField(uint8_t x,
-                           uint8_t y,
-                           COMMON::EDirect direction,
-                           Field& field);
+  bool MakingMoveField(uint8_t x,
+                       uint8_t y,
+                       COMMON::EDirect direction,
+                       Field& field);
 
 private:
   // Копия экземпляра Field

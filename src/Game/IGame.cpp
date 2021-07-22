@@ -32,34 +32,22 @@ IGame::CreateNewGame()
 bool
 IGame::MakingMove(uint8_t x, uint8_t y, std::vector<COMMON::EDirect> directions)
 {
-  // Выполнен ход в конечную точку
-  bool final_resolution = false;
-
-  for (int i(0); i < directions.size(); ++i) {
-
-    if (CheckMoveOne(x, y, directions[i], m_field)) {
-      final_resolution = MakingMoveCopyField(x, y, directions[i], m_field);
-    } else {
+  // Проходимся по списку направлений и меняем фишки
+  for (auto dir = directions.begin(); dir != directions.end(); ++dir) {
+    // В случае если нет возможности куда то походить будет false
+    if (!MakingMoveField(x, y, *dir, m_field))
       return false;
-    }
-
-    switch (directions[i]) {
-      case COMMON::EDirect::RIGHT:
-        x = x + 2;
-        break;
-      case COMMON::EDirect::LEFT:
-        x = x - 2;
-        break;
-      case COMMON::EDirect::UP:
-        y = y - 2;
-        break;
-      case COMMON::EDirect::DOWN:
-        y = y + 2;
-        break;
-    }
+    // Меняем координату X
+    x += (*dir == COMMON::EDirect::RIGHT
+            ? 2
+            : (*dir == COMMON::EDirect::LEFT ? -2 : 0));
+    // Меняем координату Y
+    y +=
+      (*dir == COMMON::EDirect::DOWN ? 2
+                                     : (*dir == COMMON::EDirect::UP ? -2 : 0));
   }
 
-  return final_resolution;
+  return true;
 }
 
 void
@@ -71,43 +59,31 @@ IGame::SetField(Field field)
 bool
 IGame::CheckMove(uint8_t x, uint8_t y, std::vector<COMMON::EDirect> directions)
 {
-  // разрешён ли ход в конечную точку
-  bool final_resolution = false;
   // скопируем объект
   Field copy_field = m_field;
 
-  for (int i(0); i < directions.size(); ++i) {
-
-    if (CheckMoveOne(x, y, directions[i], copy_field)) {
-      final_resolution = MakingMoveCopyField(x, y, directions[i], copy_field);
-    } else {
+  for (auto dir = directions.begin(); dir != directions.end(); ++dir) {
+    // В случае если нет возможности куда то походить будет false
+    if (!MakingMoveField(x, y, *dir, copy_field))
       return false;
-    }
-
-    switch (directions[i]) {
-      case COMMON::EDirect::RIGHT:
-        x = x + 2;
-        break;
-      case COMMON::EDirect::LEFT:
-        x = x - 2;
-        break;
-      case COMMON::EDirect::UP:
-        y = y - 2;
-        break;
-      case COMMON::EDirect::DOWN:
-        y = y + 2;
-        break;
-    }
+    // Меняем координату X
+    x += (*dir == COMMON::EDirect::RIGHT
+            ? 2
+            : (*dir == COMMON::EDirect::LEFT ? -2 : 0));
+    // Меняем координату Y
+    y +=
+      (*dir == COMMON::EDirect::DOWN ? 2
+                                     : (*dir == COMMON::EDirect::UP ? -2 : 0));
   }
 
-  return final_resolution;
+  return true;
 }
 
 bool
-IGame::CheckMoveOne(uint8_t x,
-                    uint8_t y,
-                    COMMON::EDirect direction,
-                    Field& field)
+IGame::CheckMovingOneCell(uint8_t x,
+                          uint8_t y,
+                          COMMON::EDirect direction,
+                          Field& field)
 {
   bool cell1, cell2, cell3;
 
@@ -150,10 +126,10 @@ IGame::CheckMoveOne(uint8_t x,
 }
 
 bool
-IGame::MakingMoveCopyField(uint8_t x,
-                           uint8_t y,
-                           COMMON::EDirect direction,
-                           Field& field)
+IGame::MakingMoveField(uint8_t x,
+                       uint8_t y,
+                       COMMON::EDirect direction,
+                       Field& field)
 {
   uint8_t width = m_field.GetWidth();
   uint8_t height = m_field.GetHeight();
@@ -206,7 +182,8 @@ IGame::IsGameOver()
   for (int i(0); i < width; i++) {
     for (int j(0); j < height; j++) {
       for (int direct(0); direct < 4; direct++) {
-        if (CheckMoveOne(i, j, static_cast<COMMON::EDirect>(direct), m_field))
+        if (CheckMovingOneCell(
+              i, j, static_cast<COMMON::EDirect>(direct), m_field))
           return true;
       }
     }
