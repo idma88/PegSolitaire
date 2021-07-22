@@ -42,6 +42,21 @@ IGame::MakingMove(uint8_t x, uint8_t y, std::vector<COMMON::EDirect> directions)
     } else {
       return false;
     }
+
+    switch (directions[i]) {
+      case COMMON::EDirect::RIGHT:
+        x = x + 2;
+        break;
+      case COMMON::EDirect::LEFT:
+        x = x - 2;
+        break;
+      case COMMON::EDirect::UP:
+        y = y - 2;
+        break;
+      case COMMON::EDirect::DOWN:
+        y = y + 2;
+        break;
+    }
   }
 
   return final_resolution;
@@ -67,6 +82,21 @@ IGame::CheckMove(uint8_t x, uint8_t y, std::vector<COMMON::EDirect> directions)
       final_resolution = MakingMoveCopyField(x, y, directions[i], copy_field);
     } else {
       return false;
+    }
+
+    switch (directions[i]) {
+      case COMMON::EDirect::RIGHT:
+        x = x + 2;
+        break;
+      case COMMON::EDirect::LEFT:
+        x = x - 2;
+        break;
+      case COMMON::EDirect::UP:
+        y = y - 2;
+        break;
+      case COMMON::EDirect::DOWN:
+        y = y + 2;
+        break;
     }
   }
 
