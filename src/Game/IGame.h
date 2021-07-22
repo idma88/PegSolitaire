@@ -45,9 +45,15 @@ public:
 
 private:
   // Проверить одиночный ход
-  bool CheckMoveOne(uint8_t x, uint8_t y, COMMON::EDirect direction);
+  bool CheckMoveOne(uint8_t x,
+                    uint8_t y,
+                    COMMON::EDirect direction,
+                    Field& field);
   // Выполнить ход в копии поля
-  bool MakingMoveCopyField(uint8_t x, uint8_t y, COMMON::EDirect direction);
+  bool MakingMoveCopyField(uint8_t x,
+                           uint8_t y,
+                           COMMON::EDirect direction,
+                           Field& field);
 
 private:
   // Копия экземпляра Field
@@ -58,6 +64,4 @@ private:
   uint8_t m_active_user = 0;
   // Режим игры
   COMMON::EGameMode m_mode_game;
-  // Копия поля
-  std::vector<COMMON::ECell> m_copy_field;
 };

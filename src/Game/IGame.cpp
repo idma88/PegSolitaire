@@ -32,8 +32,19 @@ IGame::CreateNewGame()
 bool
 IGame::MakingMove(uint8_t x, uint8_t y, std::vector<COMMON::EDirect> directions)
 {
+  // Выполнен ход в конечную точку
+  bool final_resolution = false;
 
-  return false;
+  for (int i(0); i < directions.size(); ++i) {
+
+    if (CheckMoveOne(x, y, directions[i], m_field)) {
+      final_resolution = MakingMoveCopyField(x, y, directions[i], m_field);
+    } else {
+      return false;
+    }
+  }
+
+  return final_resolution;
 }
 
 void
@@ -47,13 +58,13 @@ IGame::CheckMove(uint8_t x, uint8_t y, std::vector<COMMON::EDirect> directions)
 {
   // разрешён ли ход в конечную точку
   bool final_resolution = false;
-  // скопируем поле
-  m_copy_field = m_field.GetField();
+  // скопируем объект
+  Field copy_field = m_field;
 
   for (int i(0); i < directions.size(); ++i) {
 
-    if (CheckMoveOne(x, y, directions[i])) {
-      final_resolution = MakingMoveCopyField(x, y, directions[i]);
+    if (CheckMoveOne(x, y, directions[i], copy_field)) {
+      final_resolution = MakingMoveCopyField(x, y, directions[i], copy_field);
     } else {
       return false;
     }
@@ -63,40 +74,43 @@ IGame::CheckMove(uint8_t x, uint8_t y, std::vector<COMMON::EDirect> directions)
 }
 
 bool
-IGame::CheckMoveOne(uint8_t x, uint8_t y, COMMON::EDirect direction)
+IGame::CheckMoveOne(uint8_t x,
+                    uint8_t y,
+                    COMMON::EDirect direction,
+                    Field& field)
 {
   bool cell1, cell2, cell3;
 
   switch (direction) {
     case COMMON::EDirect::RIGHT:
       // Проверим соответствие фишки, в случае выхода за диапазон будет false
-      cell1 = m_field.GetCell(x, y) == COMMON::ECell::SET;
-      cell2 = m_field.GetCell(x + 1, y) == COMMON::ECell::SET;
-      cell3 = m_field.GetCell(x + 2, y) == COMMON::ECell::FREE;
+      cell1 = field.GetCell(x, y) == COMMON::ECell::SET;
+      cell2 = field.GetCell(x + 1, y) == COMMON::ECell::SET;
+      cell3 = field.GetCell(x + 2, y) == COMMON::ECell::FREE;
       // Перемножим результат соответствия
       return cell1 && cell2 && cell3;
       break;
     case COMMON::EDirect::LEFT:
       // Проверим соответствие фишки, в случае выхода за диапазон будет false
-      cell1 = m_field.GetCell(x, y) == COMMON::ECell::SET;
-      cell2 = m_field.GetCell(x - 1, y) == COMMON::ECell::SET;
-      cell3 = m_field.GetCell(x - 2, y) == COMMON::ECell::FREE;
+      cell1 = field.GetCell(x, y) == COMMON::ECell::SET;
+      cell2 = field.GetCell(x - 1, y) == COMMON::ECell::SET;
+      cell3 = field.GetCell(x - 2, y) == COMMON::ECell::FREE;
       // Перемножим результат соответствия
       return cell1 && cell2 && cell3;
       break;
     case COMMON::EDirect::UP:
       // Проверим соответствие фишки, в случае выхода за диапазон будет false
-      cell1 = m_field.GetCell(x, y) == COMMON::ECell::SET;
-      cell2 = m_field.GetCell(x, y - 1) == COMMON::ECell::SET;
-      cell3 = m_field.GetCell(x, y - 2) == COMMON::ECell::FREE;
+      cell1 = field.GetCell(x, y) == COMMON::ECell::SET;
+      cell2 = field.GetCell(x, y - 1) == COMMON::ECell::SET;
+      cell3 = field.GetCell(x, y - 2) == COMMON::ECell::FREE;
       // Перемножим результат соответствия
       return cell1 && cell2 && cell3;
       break;
     case COMMON::EDirect::DOWN:
       // Проверим соответствие фишки, в случае выхода за диапазон будет false
-      cell1 = m_field.GetCell(x, y) == COMMON::ECell::SET;
-      cell2 = m_field.GetCell(x, y + 1) == COMMON::ECell::SET;
-      cell3 = m_field.GetCell(x, y + 2) == COMMON::ECell::FREE;
+      cell1 = field.GetCell(x, y) == COMMON::ECell::SET;
+      cell2 = field.GetCell(x, y + 1) == COMMON::ECell::SET;
+      cell3 = field.GetCell(x, y + 2) == COMMON::ECell::FREE;
       // Перемножим результат соответствия
       return cell1 && cell2 && cell3;
       break;
@@ -106,7 +120,10 @@ IGame::CheckMoveOne(uint8_t x, uint8_t y, COMMON::EDirect direction)
 }
 
 bool
-IGame::MakingMoveCopyField(uint8_t x, uint8_t y, COMMON::EDirect direction)
+IGame::MakingMoveCopyField(uint8_t x,
+                           uint8_t y,
+                           COMMON::EDirect direction,
+                           Field& field)
 {
   uint8_t width = m_field.GetWidth();
   uint8_t height = m_field.GetHeight();
@@ -120,27 +137,27 @@ IGame::MakingMoveCopyField(uint8_t x, uint8_t y, COMMON::EDirect direction)
 
   switch (direction) {
     case COMMON::EDirect::RIGHT:
-      m_copy_field[y * width + x] = COMMON::ECell::FREE;
-      m_copy_field[y * width + x + 1] = COMMON::ECell::FREE;
-      m_copy_field[y * width + x + 2] = COMMON::ECell::SET;
+      field.SetCell(x, y, COMMON::ECell::FREE);
+      field.SetCell(x + 1, y, COMMON::ECell::FREE);
+      field.SetCell(x + 2, y, COMMON::ECell::SET);
       return true;
       break;
     case COMMON::EDirect::LEFT:
-      m_copy_field[y * width + x] = COMMON::ECell::FREE;
-      m_copy_field[y * width + x - 1] = COMMON::ECell::FREE;
-      m_copy_field[y * width + x - 2] = COMMON::ECell::SET;
+      field.SetCell(x, y, COMMON::ECell::FREE);
+      field.SetCell(x - 1, y, COMMON::ECell::FREE);
+      field.SetCell(x - 2, y, COMMON::ECell::SET);
       return true;
       break;
     case COMMON::EDirect::UP:
-      m_copy_field[y * width + x] = COMMON::ECell::FREE;
-      m_copy_field[y - 1 * width + x] = COMMON::ECell::FREE;
-      m_copy_field[y - 2 * width + x] = COMMON::ECell::SET;
+      field.SetCell(x, y, COMMON::ECell::FREE);
+      field.SetCell(x, y - 1, COMMON::ECell::FREE);
+      field.SetCell(x, y - 2, COMMON::ECell::SET);
       return true;
       break;
     case COMMON::EDirect::DOWN:
-      m_copy_field[y * width + x] = COMMON::ECell::FREE;
-      m_copy_field[y + 1 * width + x] = COMMON::ECell::FREE;
-      m_copy_field[y + 2 * width + x] = COMMON::ECell::SET;
+      field.SetCell(x, y, COMMON::ECell::FREE);
+      field.SetCell(x, y + 1, COMMON::ECell::FREE);
+      field.SetCell(x, y + 2, COMMON::ECell::SET);
       return true;
       break;
   }
@@ -159,7 +176,7 @@ IGame::IsGameOver()
   for (int i(0); i < width; i++) {
     for (int j(0); j < height; j++) {
       for (int direct(0); direct < 4; direct++) {
-        if (CheckMoveOne(i, j, static_cast<COMMON::EDirect>(direct)))
+        if (CheckMoveOne(i, j, static_cast<COMMON::EDirect>(direct), m_field))
           return true;
       }
     }
