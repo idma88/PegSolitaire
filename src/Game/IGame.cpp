@@ -10,7 +10,7 @@ IGame::GetGameMode() const
 bool
 IGame::SetGameMode(COMMON::EGameMode mode)
 {
-  if ((mode != COMMON::EGameMode::SINGLE) ||
+  if ((mode != COMMON::EGameMode::SINGLE) &&
       (mode != COMMON::EGameMode::MULTIPLAYER)) {
     LOG(ERROR) << "IGame::SetGameMode :  Invalid mode type value!";
     return false;
@@ -87,8 +87,8 @@ IGame::CheckMove(uint8_t x, uint8_t y, COMMON::EDirect direction, Field& field)
 bool
 IGame::DoMove(uint8_t x, uint8_t y, COMMON::EDirect direction, Field& field)
 {
-  uint8_t width = m_field.GetWidth();
-  uint8_t height = m_field.GetHeight();
+  uint8_t width = field.GetWidth();
+  uint8_t height = field.GetHeight();
   int8_t xShift = 0;
   int8_t yShift = 0;
 
@@ -162,17 +162,17 @@ IGame::IsGameOver()
   uint8_t height = m_field.GetHeight();
 
   // Проверим возможность хода куда нибудь, если такой вариант имеется, то хотя
-  // бы одно true вернётся
+  // бы один false вернётся
   for (int i(0); i < width; i++) {
     for (int j(0); j < height; j++) {
       for (int direct(0); direct < 4; direct++) {
         if (CheckMove(i, j, static_cast<COMMON::EDirect>(direct), m_field))
-          return true;
+          return false;
       }
     }
   }
 
-  return false;
+  return true;
 }
 
 void

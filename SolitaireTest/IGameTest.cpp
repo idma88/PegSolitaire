@@ -1,5 +1,6 @@
 #include "../src/Game/IGame.h"
 #include "../src/Common/Common.h"
+#include "../src/Field/Field.h"
 #include "../src/Game/Player.h"
 #include "CommonTest.h"
 #include "gtest/gtest.h"
@@ -10,6 +11,10 @@ class IGameTest : public ::testing::TestWithParam<int>
 public:
   // Экземпляр класса IGame
   IGame igame;
+  // Экземпляр класса Field
+  Field field;
+  // Направления движения
+  std::vector<COMMON::EDirect> direct;
 
   // Экземпляры игроков
   Player player_1{ "Alex", 0, COMMON::EPlayerType::HUMAN };
@@ -49,17 +54,62 @@ TEST_F(IGameTest, CheckingSetPlayerList)
   igame.SetPlayerList(ListPlayerActual);
   // Получаем его из класса
   ListPlayerExpected = igame.GetPlayerList();
+  // Проверяем соответствие векторов
+  ASSERT_TRUE(ListPlayerActual == ListPlayerExpected);
+}
 
-  LOG(INFO) << "Size player";
-  LOG(INFO) << sizeof(player_1);
+TEST_F(IGameTest, CheckingPositiveSetGameMode)
+{
+  // Устанавливаем режим одиночной игры
+  auto mode = COMMON::EGameMode::SINGLE;
+  // Установим игровой режим
+  ASSERT_TRUE(igame.SetGameMode(mode));
+  // Получаем игровой режим
+  ASSERT_EQ(mode, igame.GetGameMode());
 
-  LOG(INFO) << "Size list actual";
-  LOG(INFO) << sizeof(ListPlayerActual);
+  // Устанавливаем режим многопользовательской игры
+  mode = COMMON::EGameMode::MULTIPLAYER;
+  // Установим игровой режим
+  ASSERT_TRUE(igame.SetGameMode(mode));
+  // Получаем игровой режим
+  ASSERT_EQ(mode, igame.GetGameMode());
+}
 
-  LOG(INFO) << "Size list expected";
-  LOG(INFO) << sizeof(ListPlayerExpected);
+TEST_F(IGameTest, CheckingNegativeSetGameMode)
+{
+  // Устанавливаем неверное значение
+  auto mode = static_cast<COMMON::EGameMode>(3);
+  // Установим игровой режим
+  ASSERT_FALSE(igame.SetGameMode(mode));
+}
 
-  ASSERT_EQ(
-    0,
-    memcmp(&ListPlayerActual, &ListPlayerExpected, sizeof(ListPlayerActual)));
+TEST_F(IGameTest, CheckingFieldMove)
+{
+  // Создадим поле для английской версии
+  ASSERT_TRUE(field.Create(COMMON::ETypeField::ENGLISH));
+  // Передадим класс IGame поле
+  igame.SetField(field);
+  // Проверим что не конец игры
+  ASSERT_TRUE(!igame.IsGameOver());
+
+  //  Выберем фишку x = 6, y = 6
+  //    1 2 3 4 5 6 7
+  //  1     • • •
+  //  2     • • •
+  //  3 • • • • • • •
+  //  4 • • • o • X •
+  //  5 • • • • • • •
+  //  6     • • •
+  //  7     • • •
+  //  Зададим одно направление влево
+
+  // Установим направление влево
+  direct = { COMMON::EDirect::LEFT };
+  // Проверим что туда можно походить
+  ASSERT_TRUE(igame.CheckMove(5, 5, direct));
+  // Установим значение направо
+  // direct = { COMMON::EDirect::RIGHT };
+  // LOG(INFO) << static_cast<int>(direct[0]);
+  // // Проверим что туда нельзя походить
+  // ASSERT_FALSE(igame.CheckMove(6, 6, direct));
 }
