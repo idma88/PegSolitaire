@@ -27,7 +27,13 @@ public:
   // Функция взаимодействия с ячейкой
   bool SetCell(uint8_t x_field, uint8_t y_field, const COMMON::ECell value);
   // Функция получения игрового поля
-  std::vector<COMMON::ECell> GetField();
+  std::vector<COMMON::ECell> GetField() const;
+  // Получить ширину поля
+  uint8_t GetWidth() const;
+  // Получить высоту поля
+  uint8_t GetHeight() const;
+  // Проверка поставленной фишки
+  COMMON::ECell GetCell(uint8_t x, uint8_t y) const;
 
 public:
   // Максимальная ширина поля

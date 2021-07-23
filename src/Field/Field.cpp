@@ -126,8 +126,34 @@ Field::SetCell(uint8_t x_field, uint8_t y_field, const COMMON::ECell value)
 }
 
 std::vector<COMMON::ECell>
-Field::GetField()
+Field::GetField() const
 {
   // Возвращаем поле
   return m_field;
+}
+
+uint8_t
+Field::GetWidth() const
+{
+  // Возвращаем ширину поля
+  return m_width;
+}
+
+uint8_t
+Field::GetHeight() const
+{
+  // Возвращаем высоту поля
+  return m_height;
+}
+
+COMMON::ECell
+Field::GetCell(uint8_t x, uint8_t y) const
+{
+  // Проверяем диапазон
+  if ((m_width <= x) || (m_height <= y)) {
+    LOG(ERROR) << "Field::GetCell : The entered coordinates are out of range!";
+    return COMMON::ECell::LOCK;
+  }
+
+  return m_field[y * m_width + x];
 }
