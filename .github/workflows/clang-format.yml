@@ -1,0 +1,24 @@
+name: clang-format Linter
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: DoozyX/clang-format-lint-action@v0.12
+      with:
+        source: 'src SolitaireTest'
+        clangFormatVersion: 12
+        inplace: True
+    - uses: EndBug/add-and-commit@v4
+      with:
+        author_name: clang-format Robot
+        author_email: robot@clang
+        message: 'Форматирование кода (clang-format)'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
