@@ -78,6 +78,13 @@ IGame::CheckMove(uint8_t x, uint8_t y, COMMON::EDirect direction, Field& field)
   if (!CheckShift(xShift, yShift, direction))
     return false;
 
+  int8_t xFar = (int8_t)x + 2 * xShift;
+  int8_t yFar = (int8_t)y + 2 * yShift;
+
+  if ((xFar < 0) || (xFar >= field.GetWidth()) || (yFar < 0) ||
+      (yFar >= field.GetHeight()))
+    return false;
+
   // Проверим соответствие фишки, в случае выхода за диапазон будет false
   return (field.GetCell(x, y) == COMMON::ECell::SET) &&
          (field.GetCell(x + xShift, y + yShift) == COMMON::ECell::SET) &&
@@ -98,6 +105,9 @@ IGame::DoMove(uint8_t x, uint8_t y, COMMON::EDirect direction, Field& field)
                   "out of range!";
     return false;
   }
+
+  if (!CheckMove(x, y, direction, field))
+    return false;
 
   if (!CheckShift(xShift, yShift, direction))
     return false;

@@ -92,24 +92,27 @@ TEST_F(IGameTest, CheckingFieldMove)
   // Проверим что не конец игры
   ASSERT_TRUE(!igame.IsGameOver());
 
-  //  Выберем фишку x = 6, y = 6
-  //    1 2 3 4 5 6 7
+  //  Выберем фишку x = 5, y = 3
+  //    0 1 2 3 4 5 6
+  //  0     • • •
   //  1     • • •
-  //  2     • • •
-  //  3 • • • • • • •
-  //  4 • • • o • X •
-  //  5 • • • • • • •
+  //  2 • • • • • • •
+  //  3 • • • o • X •
+  //  4 • • • • • • •
+  //  5     • • •
   //  6     • • •
-  //  7     • • •
   //  Зададим одно направление влево
 
   // Установим направление влево
   direct = { COMMON::EDirect::LEFT };
   // Проверим что туда можно походить
-  ASSERT_TRUE(igame.CheckMove(5, 5, direct));
+  ASSERT_TRUE(igame.CheckMove(5, 3, direct));
   // Установим значение направо
-  // direct = { COMMON::EDirect::RIGHT };
-  // LOG(INFO) << static_cast<int>(direct[0]);
-  // // Проверим что туда нельзя походить
-  // ASSERT_FALSE(igame.CheckMove(6, 6, direct));
+  direct = { COMMON::EDirect::RIGHT };
+  // Проверим что туда нельзя походить
+  ASSERT_FALSE(igame.CheckMove(5, 3, direct));
+
+  // Проверим явно недопустимые варианты
+  ASSERT_FALSE(igame.CheckMove(3, 3, direct));
+  ASSERT_FALSE(igame.CheckMove(6, 6, direct));
 }
