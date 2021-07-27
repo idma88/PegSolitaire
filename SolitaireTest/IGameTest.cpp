@@ -26,24 +26,6 @@ public:
   std::vector<Player> ListPlayerExpected;
 };
 
-// Подаваемые значения для выбора режима
-// INSTANTIATE_TEST_SUITE_P(ModeL,
-//                          IGameTest,
-//                          ::testing::Values(COMMON::ETypeField::ENGLISH,
-//                                            COMMON::ETypeField::EUROPEAN));
-
-// TEST_P(FieldTest, CheckingPositiveTheCreationOfFields)
-// {
-//   // Получение возможнных параметров
-//   auto xmode = static_cast<COMMON::ETypeField>(GetParam());
-//   // Создание поля с для английской версии
-//   ASSERT_TRUE(field.Create(xmode));
-//   // Получить это поле
-//   field_expected = field.GetField();
-//   // Проверяем соответствие размеров
-//   ASSERT_EQ(field_expected.size(), Size);
-// }
-
 TEST_F(IGameTest, CheckingSetPlayerList)
 {
   // Загружаем список игроков
@@ -115,4 +97,93 @@ TEST_F(IGameTest, CheckingFieldMove)
   // Проверим явно недопустимые варианты
   ASSERT_FALSE(igame.CheckMove(3, 3, direct));
   ASSERT_FALSE(igame.CheckMove(6, 6, direct));
+
+  //    0 1 2 3 4 5 6
+  //  0     • • •
+  //  1     • • •
+  //  2 • • • • • • •
+  //  3 • • • Х o o •
+  //  4 • • • • • • •
+  //  5     • • •
+  //  6     • • •
+
+  // Установим направление влево
+  direct = { COMMON::EDirect::LEFT };
+  // Проверим что туда можно походить
+  ASSERT_TRUE(igame.DoMove(5, 3, direct));
+
+  // Проверим не допустимый вариант хода ещё раз влево
+  // Проверим что влево нельзя походить из координаты 3,3
+  ASSERT_FALSE(igame.DoMove(3, 3, direct));
+
+  // Проверим что влево нельзя походить из координаты где нет фишки
+  ASSERT_FALSE(igame.DoMove(5, 3, direct));
+}
+
+TEST_F(IGameTest, CheckingFieldMultiMove)
+{
+  // Создадим поле для английской версии
+  ASSERT_TRUE(field.Create(COMMON::ETypeField::ENGLISH));
+
+  //  Уберём фишки из координат помеченных Y для проверки мультихода
+  //    0 1 2 3 4 5 6
+  //  0     • • •
+  //  1     • • •
+  //  2 • • X • Y • •
+  //  3 • • • 0 • • •
+  //  4 • • Y • Y • •
+  //  5     • • •
+  //  6     • • •
+
+  field.SetCell(4, 2, COMMON::ECell::FREE);
+  field.SetCell(4, 4, COMMON::ECell::FREE);
+  field.SetCell(2, 4, COMMON::ECell::FREE);
+
+  // Передадим класс IGame поле
+  igame.SetField(field);
+  // Проверим что не конец игры
+  ASSERT_TRUE(!igame.IsGameOver());
+
+  // Походим из X в Y(4,2) -> Y(4.4)->Y(2,4) -> 2,2
+
+  // Установим направление для мультихода
+  direct = { COMMON::EDirect::RIGHT,
+             COMMON::EDirect::DOWN,
+             COMMON::EDirect::LEFT,
+             COMMON::EDirect::UP };
+
+  // Проверим что туда можно походить
+  ASSERT_TRUE(igame.CheckMove(2, 2, direct));
+
+  // Делаем мультиход
+  ASSERT_TRUE(igame.DoMove(2, 2, direct));
+
+  // Проверяем, что направо ещё раз походить нельзя
+  direct = { COMMON::EDirect::RIGHT };
+
+  ASSERT_FALSE(igame.CheckMove(2, 2, direct));
+  // Попробуем туда сделать ход
+  ASSERT_FALSE(igame.CheckMove(2, 2, direct));
+
+  //    0 1 2 3 4 5 6
+  //  0     • • •
+  //  1     • • •
+  //  2 • X Y 0 0 • •
+  //  3 • • 0 0 0 • •
+  //  4 • • 0 0 0 • •
+  //  5     • • •
+  //  6     • • •
+
+  // Попробуем походить вправо из координаты x = 1 y = 2
+  ASSERT_TRUE(igame.CheckMove(1, 2, direct));
+  // Попробуем туда сделать ход
+  ASSERT_TRUE(igame.CheckMove(1, 2, direct));
+
+  // Попробуем сделать неправильный мультиход из х = 0 у = 3 вправо и ещё раз
+  // вправо
+  direct = { COMMON::EDirect::RIGHT, COMMON::EDirect::RIGHT };
+  // Проверим что это не возможно
+  ASSERT_FALSE(igame.CheckMove(0, 3, direct));
+  // Попробуем туда сделать ход
+  ASSERT_FALSE(igame.CheckMove(0, 3, direct));
 }

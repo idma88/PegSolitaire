@@ -75,15 +75,20 @@ IGame::CheckMove(uint8_t x, uint8_t y, COMMON::EDirect direction, Field& field)
   int8_t xShift = 0;
   int8_t yShift = 0;
 
-  if (!CheckShift(xShift, yShift, direction))
+  if (!CheckShift(xShift, yShift, direction)) {
+    LOG(WARNING) << "IGame::CheckMove : Checking one move!";
     return false;
+  }
 
   int8_t xFar = (int8_t)x + 2 * xShift;
   int8_t yFar = (int8_t)y + 2 * yShift;
 
   if ((xFar < 0) || (xFar >= field.GetWidth()) || (yFar < 0) ||
-      (yFar >= field.GetHeight()))
+      (yFar >= field.GetHeight())) {
+    LOG(WARNING)
+      << "IGame::CheckMove : Checking for negative numbers and out of range";
     return false;
+  }
 
   // Проверим соответствие фишки, в случае выхода за диапазон будет false
   return (field.GetCell(x, y) == COMMON::ECell::SET) &&
@@ -101,16 +106,20 @@ IGame::DoMove(uint8_t x, uint8_t y, COMMON::EDirect direction, Field& field)
 
   // Проверяем диапазон
   if ((width <= x) || (height <= y)) {
-    LOG(ERROR) << "Field::MakingMoveCopyField : The entered coordinates are "
-                  "out of range!";
+    LOG(WARNING) << "IGame::DoMove : The entered coordinates are "
+                    "out of range!";
     return false;
   }
 
-  if (!CheckMove(x, y, direction, field))
+  if (!CheckMove(x, y, direction, field)) {
+    LOG(WARNING) << "IGame::DoMove : Checking one move!";
     return false;
+  }
 
-  if (!CheckShift(xShift, yShift, direction))
+  if (!CheckShift(xShift, yShift, direction)) {
+    LOG(WARNING) << "IGame::DoMove : Something with a direction!";
     return false;
+  }
 
   field.SetCell(x, y, COMMON::ECell::FREE);
   field.SetCell(x + xShift, y + yShift, COMMON::ECell::FREE);
