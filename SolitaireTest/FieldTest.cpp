@@ -38,3 +38,11 @@ TEST_F(FieldTest, CheckingNegativeTheCreationOfFields)
   // Создание поля с неверным параметром
   ASSERT_FALSE(field.Create(static_cast<COMMON::ETypeField>(3)));
 }
+
+TEST_F(FieldTest, CheckingGetSize)
+{
+  ASSERT_TRUE(field.Create(COMMON::ETypeField::ENGLISH));
+  // По дефолту параметры w = 7 и h = 7
+  ASSERT_EQ(7, field.GetWidth());
+  ASSERT_EQ(7, field.GetHeight());
+}
