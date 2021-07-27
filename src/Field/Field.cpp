@@ -96,6 +96,15 @@ Field::Create(uint8_t width,
     return false;
   }
 
+  if ((width > MAX_WIDTH) || (height > MAX_HEIGHT)) {
+    LOG(ERROR)
+      << "Field::Create : Сustom field is larger than maximum constants!";
+    return false;
+  }
+
+  // Перепишем размеры поля
+  m_width = width;
+  m_height = height;
   // Меняем длину вектора под размер поля
   m_field.resize(width * height);
   // Копируем данные из шаблона в поле
