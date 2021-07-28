@@ -75,6 +75,12 @@ Field::Create(uint8_t width,
               uint8_t height,
               const std::vector<COMMON::ECell>& pattern)
 {
+  if ((width > MAX_WIDTH) || (height > MAX_HEIGHT)) {
+    LOG(ERROR)
+      << "Field::Create : Сustom field is larger than maximum constants!";
+    return false;
+  }
+
   // Проверяем вектор на наличие данных
   if (pattern.size() == 0) {
     LOG(ERROR) << "Field::Create : There is no data!";
@@ -96,6 +102,9 @@ Field::Create(uint8_t width,
     return false;
   }
 
+  // Перепишем размеры поля
+  m_width = width;
+  m_height = height;
   // Меняем длину вектора под размер поля
   m_field.resize(width * height);
   // Копируем данные из шаблона в поле

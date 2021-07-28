@@ -83,3 +83,10 @@ Player::GetScore() const
   // Возвращаем счёт
   return m_score;
 }
+
+bool
+operator==(const Player& lhs, const Player& rhs)
+{
+  return lhs.m_name == rhs.m_name && lhs.m_essence == rhs.m_essence &&
+         lhs.m_score == rhs.m_score;
+}

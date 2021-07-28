@@ -10,7 +10,7 @@ IGame::GetGameMode() const
 bool
 IGame::SetGameMode(COMMON::EGameMode mode)
 {
-  if ((mode != COMMON::EGameMode::SINGLE) ||
+  if ((mode != COMMON::EGameMode::SINGLE) &&
       (mode != COMMON::EGameMode::MULTIPLAYER)) {
     LOG(ERROR) << "IGame::SetGameMode :  Invalid mode type value!";
     return false;
@@ -75,8 +75,20 @@ IGame::CheckMove(uint8_t x, uint8_t y, COMMON::EDirect direction, Field& field)
   int8_t xShift = 0;
   int8_t yShift = 0;
 
-  if (!CheckShift(xShift, yShift, direction))
+  if (!CheckShift(xShift, yShift, direction)) {
+    LOG(WARNING) << "IGame::CheckMove : Checking one move!";
     return false;
+  }
+
+  int8_t xFar = (int8_t)x + 2 * xShift;
+  int8_t yFar = (int8_t)y + 2 * yShift;
+
+  if ((xFar < 0) || (xFar >= field.GetWidth()) || (yFar < 0) ||
+      (yFar >= field.GetHeight())) {
+    LOG(WARNING)
+      << "IGame::CheckMove : Checking for negative numbers and out of range";
+    return false;
+  }
 
   // Проверим соответствие фишки, в случае выхода за диапазон будет false
   return (field.GetCell(x, y) == COMMON::ECell::SET) &&
@@ -87,20 +99,27 @@ IGame::CheckMove(uint8_t x, uint8_t y, COMMON::EDirect direction, Field& field)
 bool
 IGame::DoMove(uint8_t x, uint8_t y, COMMON::EDirect direction, Field& field)
 {
-  uint8_t width = m_field.GetWidth();
-  uint8_t height = m_field.GetHeight();
+  uint8_t width = field.GetWidth();
+  uint8_t height = field.GetHeight();
   int8_t xShift = 0;
   int8_t yShift = 0;
 
   // Проверяем диапазон
   if ((width <= x) || (height <= y)) {
-    LOG(ERROR) << "Field::MakingMoveCopyField : The entered coordinates are "
-                  "out of range!";
+    LOG(WARNING) << "IGame::DoMove : The entered coordinates are "
+                    "out of range!";
     return false;
   }
 
-  if (!CheckShift(xShift, yShift, direction))
+  if (!CheckMove(x, y, direction, field)) {
+    LOG(WARNING) << "IGame::DoMove : Checking one move!";
     return false;
+  }
+
+  if (!CheckShift(xShift, yShift, direction)) {
+    LOG(WARNING) << "IGame::DoMove : Something with a direction!";
+    return false;
+  }
 
   field.SetCell(x, y, COMMON::ECell::FREE);
   field.SetCell(x + xShift, y + yShift, COMMON::ECell::FREE);
@@ -162,17 +181,17 @@ IGame::IsGameOver()
   uint8_t height = m_field.GetHeight();
 
   // Проверим возможность хода куда нибудь, если такой вариант имеется, то хотя
-  // бы одно true вернётся
+  // бы один false вернётся
   for (int i(0); i < width; i++) {
     for (int j(0); j < height; j++) {
       for (int direct(0); direct < 4; direct++) {
         if (CheckMove(i, j, static_cast<COMMON::EDirect>(direct), m_field))
-          return true;
+          return false;
       }
     }
   }
 
-  return false;
+  return true;
 }
 
 void
