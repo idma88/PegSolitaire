@@ -17,6 +17,6 @@ public:
   ~CoreGame();
 
 public:
-  // 
+  //
   void CreateNewGame();
 };

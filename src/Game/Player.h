@@ -35,7 +35,7 @@ public:
   uint16_t GetScore() const;
   // Для сравнения векторов
   friend bool operator==(const Player& lhs, const Player& rhs);
-  
+
 private:
   // Имя игрока
   std::string m_name = "";
