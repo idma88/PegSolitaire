@@ -75,6 +75,12 @@ Field::Create(uint8_t width,
               uint8_t height,
               const std::vector<COMMON::ECell>& pattern)
 {
+  if ((width > MAX_WIDTH) || (height > MAX_HEIGHT)) {
+    LOG(ERROR)
+      << "Field::Create : Сustom field is larger than maximum constants!";
+    return false;
+  }
+
   // Проверяем вектор на наличие данных
   if (pattern.size() == 0) {
     LOG(ERROR) << "Field::Create : There is no data!";
@@ -93,12 +99,6 @@ Field::Create(uint8_t width,
                (item == COMMON::ECell::SET);
       })) {
     LOG(ERROR) << "Field::Create : Invalid data type in pattern!";
-    return false;
-  }
-
-  if ((width > MAX_WIDTH) || (height > MAX_HEIGHT)) {
-    LOG(ERROR)
-      << "Field::Create : Сustom field is larger than maximum constants!";
     return false;
   }
 
