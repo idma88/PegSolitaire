@@ -161,9 +161,10 @@ TEST_F(IGameTest, CheckingFieldMultiMove)
   // Проверяем, что направо ещё раз походить нельзя
   direct = { COMMON::EDirect::RIGHT };
 
+  // Проверим что нельзя сделать ход
   ASSERT_FALSE(igame.CheckMove(2, 2, direct));
-  // Попробуем туда сделать ход
-  ASSERT_FALSE(igame.CheckMove(2, 2, direct));
+  // Попробуем сделать ход куда нельзя
+  ASSERT_FALSE(igame.DoMove(2, 2, direct));
 
   //    0 1 2 3 4 5 6
   //  0     • • •
@@ -177,7 +178,7 @@ TEST_F(IGameTest, CheckingFieldMultiMove)
   // Попробуем походить вправо из координаты x = 1 y = 2
   ASSERT_TRUE(igame.CheckMove(1, 2, direct));
   // Попробуем туда сделать ход
-  ASSERT_TRUE(igame.CheckMove(1, 2, direct));
+  ASSERT_TRUE(igame.DoMove(1, 2, direct));
 
   // Попробуем сделать неправильный мультиход из х = 0 у = 3 вправо и ещё раз
   // вправо
@@ -185,5 +186,5 @@ TEST_F(IGameTest, CheckingFieldMultiMove)
   // Проверим что это не возможно
   ASSERT_FALSE(igame.CheckMove(0, 3, direct));
   // Попробуем туда сделать ход
-  ASSERT_FALSE(igame.CheckMove(0, 3, direct));
+  ASSERT_FALSE(igame.DoMove(0, 3, direct));
 }
