@@ -6,7 +6,7 @@
 namespace COMMON {
 
 // Возможные состояния ячейки
-enum class ECell
+enum class ECell : uint8_t
 {
   LOCK = 0,
   FREE = 1,
