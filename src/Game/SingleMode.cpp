@@ -12,7 +12,7 @@ SingleMode::CreateNewGame()
 
   // Обновляем счёт и устанавливаем его
   uint8_t count_cell =
-    std::count_if(fieldRaw.begin(), fieldRaw.end(), [](auto cell) {
+    std::count_if(fieldRaw.begin(), fieldRaw.end(), [](COMMON::ECell cell) {
       return cell == COMMON::ECell::SET;
     });
 
