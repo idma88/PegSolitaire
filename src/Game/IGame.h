@@ -17,7 +17,7 @@ public:
   // Конструктор
   IGame() = default;
   // Деструктор
-  ~IGame() = default;
+  virtual ~IGame(){};
 
 public:
   // Получить информацию о игровом режиме
@@ -41,7 +41,7 @@ public:
   // Получить номер актиавного пользователя
   uint8_t GetActivePlayerId() const;
 
-private:
+protected:
   // Проверить одиночный ход
   bool CheckMove(uint8_t x, uint8_t y, COMMON::EDirect direction, Field& field);
   // Выполнить ход в копии поля
@@ -51,7 +51,7 @@ private:
   // Установить вспомогательные координаты в зависимости от направления
   bool CheckShift(int8_t& x, int8_t& y, COMMON::EDirect direction) const;
 
-private:
+protected:
   // Копия экземпляра Field
   Field m_field;
   // Cписок пользователей
