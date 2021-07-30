@@ -1,6 +1,9 @@
 #include "SingleMode.h"
 
-SingleMode::SingleMode() {}
+SingleMode::SingleMode(COMMON::EGameMode game_mode)
+{
+  m_mode_game = game_mode;
+}
 
 SingleMode::~SingleMode() {}
 
