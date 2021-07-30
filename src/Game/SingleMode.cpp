@@ -7,6 +7,8 @@ SingleMode::~SingleMode() {}
 bool
 SingleMode::CreateNewGame()
 {
+  // Вызовим родительский метод для создания игры
+  IGame::CreateNewGame();
   // Копируем поле
   std::vector<COMMON::ECell> fieldRaw = m_field.GetField();
 
