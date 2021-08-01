@@ -1,8 +1,8 @@
 #include "SingleMode.h"
 
-SingleMode::SingleMode(COMMON::EGameMode game_mode)
+SingleMode::SingleMode()
 {
-  m_mode_game = game_mode;
+  m_mode_game = COMMON::EGameMode::SINGLE;
 }
 
 SingleMode::~SingleMode() {}
@@ -11,12 +11,13 @@ bool
 SingleMode::CreateNewGame()
 {
   // Вызовим родительский метод для создания игры
-  IGame::CreateNewGame();
+  if (!IGame::CreateNewGame())
+    return false;
   // Копируем поле
   std::vector<COMMON::ECell> fieldRaw = m_field.GetField();
 
   // Обновляем счёт и устанавливаем его
-  uint8_t count_cell =
+  uint16_t count_cell =
     std::count_if(fieldRaw.begin(), fieldRaw.end(), [](COMMON::ECell cell) {
       return cell == COMMON::ECell::SET;
     });
@@ -32,10 +33,11 @@ SingleMode::DoMove(uint8_t x,
                    std::vector<COMMON::EDirect> directions)
 {
   // Сделаем направление ходов и если true, то вычесть очки
-  if (IGame::DoMove(x, y, directions)) {
-    return m_list_player[m_active_user].AddPoints((int16_t)directions.size() *
-                                                  (-1));
-  }
+  if (!IGame::DoMove(x, y, directions))
+    return false;
+  // Вычитвем очки
+  return m_list_player[m_active_user].AddPoints(-1 *
+                                                (int16_t)directions.size());
   // По дефолту вернуть false
   return false;
 }

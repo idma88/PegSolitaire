@@ -5,7 +5,7 @@
 class SingleMode : public IGame
 {
   // Коструктор
-  SingleMode(COMMON::EGameMode game_mode);
+  SingleMode();
   // Деструктор
   ~SingleMode();
 
