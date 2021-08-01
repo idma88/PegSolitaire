@@ -40,31 +40,6 @@ TEST_F(IGameTest, CheckingSetPlayerList)
   ASSERT_TRUE(ListPlayerActual == ListPlayerExpected);
 }
 
-TEST_F(IGameTest, CheckingPositiveSetGameMode)
-{
-  // Устанавливаем режим одиночной игры
-  auto mode = COMMON::EGameMode::SINGLE;
-  // Установим игровой режим
-  ASSERT_TRUE(igame.SetGameMode(mode));
-  // Получаем игровой режим
-  ASSERT_EQ(mode, igame.GetGameMode());
-
-  // Устанавливаем режим многопользовательской игры
-  mode = COMMON::EGameMode::MULTIPLAYER;
-  // Установим игровой режим
-  ASSERT_TRUE(igame.SetGameMode(mode));
-  // Получаем игровой режим
-  ASSERT_EQ(mode, igame.GetGameMode());
-}
-
-TEST_F(IGameTest, CheckingNegativeSetGameMode)
-{
-  // Устанавливаем неверное значение
-  auto mode = static_cast<COMMON::EGameMode>(3);
-  // Установим игровой режим
-  ASSERT_FALSE(igame.SetGameMode(mode));
-}
-
 TEST_F(IGameTest, CheckingFieldMove)
 {
   // Создадим поле для английской версии

@@ -8,25 +8,34 @@ IGame::GetGameMode() const
 }
 
 bool
-IGame::SetGameMode(COMMON::EGameMode mode)
+IGame::CreateNewGame()
 {
-  if ((mode != COMMON::EGameMode::SINGLE) &&
-      (mode != COMMON::EGameMode::MULTIPLAYER)) {
-    LOG(ERROR) << "IGame::SetGameMode :  Invalid mode type value!";
+  // Проверим пуст ли список игроков
+  if (m_list_player.empty()) {
+    LOG(WARNING) << "IGame::CreateNewGame : m_player_list empty!";
+    return false;
+  }
+  // Должен быть один игрок в одиночном режиме
+  if ((m_list_player.size() != 1) &&
+      (m_mode_game == COMMON::EGameMode::SINGLE)) {
+    LOG(WARNING)
+      << "IGame::CreateNewGame : m_list_player != 1 and single mode!";
+    return false;
+  }
+  // Должно быть больше одного игрока в мультиплеере
+  if ((m_list_player.size() < 1) &&
+      (m_mode_game == COMMON::EGameMode::MULTIPLAYER)) {
+    LOG(WARNING)
+      << "IGame::CreateNewGame : m_list_player < 1 and multiplayer mode!";
+    return false;
+  }
+  // Проверим поле на нулевые размеры
+  if ((m_field.GetHeight() == 0) || (m_field.GetWidth() == 0)) {
+    LOG(WARNING) << "IGame::CreateNewGame : sizes field = 0!";
     return false;
   }
 
-  m_mode_game = mode;
   return true;
-}
-
-bool
-IGame::CreateNewGame()
-{
-  /*
-  override in mode game
-  */
-  return false;
 }
 
 bool

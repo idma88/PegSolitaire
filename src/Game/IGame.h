@@ -22,14 +22,14 @@ public:
 public:
   // Получить информацию о игровом режиме
   COMMON::EGameMode GetGameMode() const;
-  // Установить игровой режим
-  bool SetGameMode(COMMON::EGameMode mode);
   // Создание новой игры
   virtual bool CreateNewGame();
+  // Выполнение хода
+  virtual bool DoMove(uint8_t x,
+                      uint8_t y,
+                      std::vector<COMMON::EDirect> directions);
   // Загрузить копию поля
   void SetField(Field field);
-  // Выполнение хода
-  bool DoMove(uint8_t x, uint8_t y, std::vector<COMMON::EDirect> directions);
   // Проверка возможности указанного хода/последовательности ходов
   bool CheckMove(uint8_t x, uint8_t y, std::vector<COMMON::EDirect> directions);
   // Проверка конца игры
