@@ -19,6 +19,7 @@ public:
 
   // Список игроков
   std::vector<Player> ListPlayer;
+  std::vector<Player> ListGetPlayer;
   // Направления движения
   std::vector<COMMON::EDirect> direct;
 };
@@ -67,6 +68,9 @@ TEST_F(SingleModeTest, CheckingPositiveDoMove)
   singlemode.SetField(field);
   // Попробуем создать новую игру
   ASSERT_TRUE(singlemode.CreateNewGame());
+  // Проверим счёт игрока
+  ListGetPlayer = singlemode.GetPlayerList();
+  ASSERT_EQ(32, ListGetPlayer[0].GetScore());
   //  Выберем фишку x = 1, y = 3
   //    0 1 2 3 4 5 6
   //  0     • • •
@@ -80,6 +84,10 @@ TEST_F(SingleModeTest, CheckingPositiveDoMove)
   direct = { COMMON::EDirect::RIGHT };
   // Попробуем сделать ход
   ASSERT_TRUE(singlemode.DoMove(1, 3, direct));
+  // Проверим счёт игрока
+  ListGetPlayer = singlemode.GetPlayerList();
+  ASSERT_EQ(31, ListGetPlayer[0].GetScore());
+
   // Попробуем ещё раз сделать ход направо, что невозможно
   //    0 1 2 3 4 5 6
   //  0     • • •
@@ -116,15 +124,6 @@ TEST_F(SingleModeTest, CheckingPositiveMultiDoMove)
   singlemode.SetField(field);
   // Попробуем создать новую игру
   ASSERT_TRUE(singlemode.CreateNewGame());
-  //  Выберем фишку x = 1, y = 3
-  //    0 1 2 3 4 5 6
-  //  0     • • •
-  //  1     • • •
-  //  2 • • • • • • •
-  //  3 • X • o • • •
-  //  4 • • • • • • •
-  //  5     • • •
-  //  6     • • •
   // Установим направление для мультихода
   direct = { COMMON::EDirect::RIGHT,
              COMMON::EDirect::DOWN,
@@ -132,6 +131,9 @@ TEST_F(SingleModeTest, CheckingPositiveMultiDoMove)
              COMMON::EDirect::UP };
   // Попробуем сделать ход
   ASSERT_TRUE(singlemode.DoMove(2, 2, direct));
+  // Проверим счёт игрока
+  ListGetPlayer = singlemode.GetPlayerList();
+  ASSERT_EQ(25, ListGetPlayer[0].GetScore());
   // Попробуем ещё раз сделать ход направо, что невозможно
   //    0 1 2 3 4 5 6
   //  0     • • •
