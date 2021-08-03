@@ -41,6 +41,9 @@ IGame::CreateNewGame()
 bool
 IGame::DoMove(uint8_t x, uint8_t y, std::vector<COMMON::EDirect> directions)
 {
+  // Проверим что последовательность ходов возможна
+  if (!CheckMove(x, y, directions))
+    return false;
   // Проходимся по списку направлений и меняем фишки
   for (auto dir = directions.begin(); dir != directions.end(); ++dir) {
     // В случае если нет возможности куда то походить будет false
