@@ -16,7 +16,7 @@ MultiplayerMode::CreateNewGame()
 
   // Обновляем счёт
   for (auto& i : m_list_player) {
-    if (!i.SetBeginScore((uint16_t)0))
+    if (!i.SetBeginScore(0))
       return false;
   }
   return true;
@@ -34,12 +34,8 @@ MultiplayerMode::DoMove(uint8_t x,
   // Добавим очки к активному игроку
   return m_list_player[m_active_user].AddPoints((int16_t)directions.size());
 
-  // Если достигли последнего игрока, то поставим первого
-  if (m_active_user == (m_list_player.size() - 1))
-    m_active_user = 0;
-  else
-    // Переключим пользователя
-    ++m_active_user;
+  // Если достигли последнего игрока, то переключим на первого
+  m_active_user = (m_active_user + 1) % m_list_player.size();
 
   // По дефолту вернуть false
   return false;
