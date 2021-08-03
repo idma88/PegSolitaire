@@ -30,11 +30,11 @@ MultiplayerMode::DoMove(uint8_t x,
     return false;
 
   // Добавим очки к активному игроку
-  return m_list_player[m_active_user].AddPoints((int16_t)directions.size());
+  if (!m_list_player[m_active_user].AddPoints((int16_t)directions.size()))
+    return false;
 
   // Если достигли последнего игрока, то переключим на первого
   m_active_user = (m_active_user + 1) % m_list_player.size();
 
-  // По дефолту вернуть false
-  return false;
+  return true;
 }
