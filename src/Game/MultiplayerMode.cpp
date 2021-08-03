@@ -14,15 +14,9 @@ MultiplayerMode::CreateNewGame()
   // Копируем поле
   std::vector<COMMON::ECell> fieldRaw = m_field.GetField();
 
-  // Обновляем счёт и устанавливаем его
-  uint16_t count_cell =
-    std::count_if(fieldRaw.begin(), fieldRaw.end(), [](COMMON::ECell cell) {
-      return cell == COMMON::ECell::SET;
-    });
-
   // Обновляем счёт
   for (auto& i : m_list_player) {
-    if (!i.SetBeginScore(0))
+    if (!i.SetBeginScore((uint16_t)0))
       return false;
   }
   return true;
@@ -36,8 +30,17 @@ MultiplayerMode::DoMove(uint8_t x,
   // Сделаем направление ходов и если true, то вычесть очки
   if (!IGame::DoMove(x, y, directions))
     return false;
+
   // Добавим очки к активному игроку
   return m_list_player[m_active_user].AddPoints((int16_t)directions.size());
+
+  // Если достигли последнего игрока, то поставим первого
+  if (m_active_user == (m_list_player.size() - 1))
+    m_active_user = 0;
+  else
+    // Переключим пользователя
+    ++m_active_user;
+
   // По дефолту вернуть false
   return false;
 }
