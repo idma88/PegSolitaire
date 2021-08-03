@@ -11,8 +11,6 @@ MultiplayerMode::CreateNewGame()
   // Вызовим родительский метод для создания игры
   if (!IGame::CreateNewGame())
     return false;
-  // Копируем поле
-  std::vector<COMMON::ECell> fieldRaw = m_field.GetField();
 
   // Обновляем счёт
   for (auto& i : m_list_player) {
