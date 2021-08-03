@@ -5,8 +5,6 @@ SingleMode::SingleMode()
   m_mode_game = COMMON::EGameMode::SINGLE;
 }
 
-SingleMode::~SingleMode() {}
-
 bool
 SingleMode::CreateNewGame()
 {
