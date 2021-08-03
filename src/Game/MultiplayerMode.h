@@ -2,13 +2,13 @@
 
 #include "IGame.h"
 
-class SingleMode : public IGame
+class MultiplayerMode : public IGame
 {
 public:
   // Коструктор
-  SingleMode();
+  MultiplayerMode();
   // Деструктор
-  ~SingleMode() = default;
+  ~MultiplayerMode() = default;
 
 public:
   // Переопределяем создание новой игры

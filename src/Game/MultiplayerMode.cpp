@@ -1,12 +1,12 @@
-#include "SingleMode.h"
+#include "MultiplayerMode.h"
 
-SingleMode::SingleMode()
+MultiplayerMode::MultiplayerMode()
 {
-  m_mode_game = COMMON::EGameMode::SINGLE;
+  m_mode_game = COMMON::EGameMode::MULTIPLAYER;
 }
 
 bool
-SingleMode::CreateNewGame()
+MultiplayerMode::CreateNewGame()
 {
   // Вызовим родительский метод для создания игры
   if (!IGame::CreateNewGame())
@@ -21,21 +21,23 @@ SingleMode::CreateNewGame()
     });
 
   // Обновляем счёт
-  m_list_player[m_active_user].SetBeginScore(count_cell);
+  for (auto& i : m_list_player) {
+    if (!i.SetBeginScore(0))
+      return false;
+  }
   return true;
 }
 
 bool
-SingleMode::DoMove(uint8_t x,
-                   uint8_t y,
-                   std::vector<COMMON::EDirect> directions)
+MultiplayerMode::DoMove(uint8_t x,
+                        uint8_t y,
+                        std::vector<COMMON::EDirect> directions)
 {
   // Сделаем направление ходов и если true, то вычесть очки
   if (!IGame::DoMove(x, y, directions))
     return false;
-  // Вычитвем очки
-  return m_list_player[m_active_user].AddPoints(-1 *
-                                                (int16_t)directions.size());
+  // Добавим очки к активному игроку
+  return m_list_player[m_active_user].AddPoints((int16_t)directions.size());
   // По дефолту вернуть false
   return false;
 }
