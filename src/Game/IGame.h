@@ -27,15 +27,17 @@ public:
   // Выполнение хода
   virtual bool DoMove(uint8_t x,
                       uint8_t y,
-                      std::vector<COMMON::EDirect> directions);
+                      const std::vector<COMMON::EDirect>& directions);
   // Загрузить копию поля
-  void SetField(Field field);
+  void SetField(const Field& field);
   // Проверка возможности указанного хода/последовательности ходов
-  bool CheckMove(uint8_t x, uint8_t y, std::vector<COMMON::EDirect> directions);
+  bool CheckMove(uint8_t x,
+                 uint8_t y,
+                 const std::vector<COMMON::EDirect>& directions);
   // Проверка конца игры
   bool IsGameOver();
   // Установить список игроков
-  void SetPlayerList(std::vector<Player> lists_player);
+  void SetPlayerList(const std::vector<Player>& lists_player);
   // Получить список игроков
   std::vector<Player> GetPlayerList() const;
   // Получить номер актиавного пользователя

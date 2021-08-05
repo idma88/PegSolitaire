@@ -20,7 +20,7 @@ public:
 
 public:
   // Метод установки имени
-  bool SetName(const std::string name);
+  bool SetName(const std::string& name);
   // Метод установки сущности
   bool SetEssence(const COMMON::EPlayerType type);
   // Установить начальный счёт

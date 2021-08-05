@@ -23,7 +23,7 @@ IGame::CreateNewGame()
     return false;
   }
   // Должно быть больше одного игрока в мультиплеере
-  if ((m_list_player.size() < 1) &&
+  if (((m_list_player.size() <= 1) || (m_list_player.size() > 4)) &&
       (m_mode_game == COMMON::EGameMode::MULTIPLAYER)) {
     LOG(WARNING)
       << "IGame::CreateNewGame : m_list_player < 1 and multiplayer mode!";
@@ -39,7 +39,9 @@ IGame::CreateNewGame()
 }
 
 bool
-IGame::DoMove(uint8_t x, uint8_t y, std::vector<COMMON::EDirect> directions)
+IGame::DoMove(uint8_t x,
+              uint8_t y,
+              const std::vector<COMMON::EDirect>& directions)
 {
   // Проверим что последовательность ходов возможна
   if (!CheckMove(x, y, directions))
@@ -58,13 +60,15 @@ IGame::DoMove(uint8_t x, uint8_t y, std::vector<COMMON::EDirect> directions)
 }
 
 void
-IGame::SetField(Field field)
+IGame::SetField(const Field& field)
 {
   m_field = field;
 }
 
 bool
-IGame::CheckMove(uint8_t x, uint8_t y, std::vector<COMMON::EDirect> directions)
+IGame::CheckMove(uint8_t x,
+                 uint8_t y,
+                 const std::vector<COMMON::EDirect>& directions)
 {
   // скопируем объект
   Field copy_field = m_field;
@@ -192,11 +196,14 @@ IGame::IsGameOver()
   uint8_t width = m_field.GetWidth();
   uint8_t height = m_field.GetHeight();
 
+  // Максимальное возможное кол-во направлений
+  const int MAX_DIRECT = 4;
+
   // Проверим возможность хода куда нибудь, если такой вариант имеется, то хотя
   // бы один false вернётся
   for (int i(0); i < width; i++) {
     for (int j(0); j < height; j++) {
-      for (int direct(0); direct < 4; direct++) {
+      for (int direct(0); direct < MAX_DIRECT; direct++) {
         if (CheckMove(i, j, static_cast<COMMON::EDirect>(direct), m_field))
           return false;
       }
@@ -207,7 +214,7 @@ IGame::IsGameOver()
 }
 
 void
-IGame::SetPlayerList(std::vector<Player> lists_player)
+IGame::SetPlayerList(const std::vector<Player>& lists_player)
 {
   // Установим список игроков
   m_list_player = lists_player;

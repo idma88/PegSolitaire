@@ -12,7 +12,7 @@ Player::Player(const std::string& name,
 Player::~Player() {}
 
 bool
-Player::SetName(const std::string name)
+Player::SetName(const std::string& name)
 {
   // Проверяем пустая ли строка
   if (name.empty()) {

@@ -108,7 +108,7 @@ Field::Create(uint8_t width,
   // Меняем длину вектора под размер поля
   m_field.resize(width * height);
   // Копируем данные из шаблона в поле
-  memcpy(m_field.data(), pattern.data(), sizeof(m_field));
+  std::copy(pattern.begin(), pattern.end(), m_field.begin());
   return true;
 }
 
