@@ -28,7 +28,7 @@ SingleMode::CreateNewGame()
 bool
 SingleMode::DoMove(uint8_t x,
                    uint8_t y,
-                   std::vector<COMMON::EDirect> directions)
+                   const std::vector<COMMON::EDirect>& directions)
 {
   // Сделаем направление ходов и если true, то вычесть очки
   if (!IGame::DoMove(x, y, directions))
