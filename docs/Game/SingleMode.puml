@@ -1,0 +1,15 @@
+@startuml ClassSingleMode
+
+!include IGame.puml
+
+SingleMode --|> IGame
+
+class SingleMode {
+  +SingleMode()
+  +~SingleMode()
+
+  +CreateNewGame() : bool
+  +DoMove(x : uint8_t, y : uint8_t, directions : std::vector<COMMON::EDirect>) : bool
+}
+
+@enduml

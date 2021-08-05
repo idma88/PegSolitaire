@@ -1,0 +1,30 @@
+@startuml ClassIGame
+
+!include ../Common/Common.puml
+
+class IGame {
+  +IGame()
+  +{abstract} ~IGame() 
+
+  +GetGameMode() : COMMON::EGameMode
+  +{abstract} CreateNewGame() : bool
+  +{abstract} DoMove(x : uint8_t, y : uint8_t, directions : conts std::vector<COMMON::EDirect>&) : bool
+  +SetField(field : conts Field&) : void
+  +CheckMove(x : uint8_t, y : uint8_t, directions : conts std::vector<COMMON::EDirect>&) : bool
+  +IsGameOver() : bool
+  +SetPlayerList(lists_player : const std::vector<Player>&) : void
+  +GetPlayerList() : std::vector<Player>
+  +GetActivePlayerId() : uint8_t
+
+  #CheckMove(x : uint8_t, y : uint8_t, direction : COMMON::EDirect, field : Field&) : bool
+  #DoMove(x : uint8_t, y : uint8_t, direction : COMMON::EDirect, field : Field&) : bool
+  #MoveShift(x : uint8_t&, y : uint8_t&, direction : COMMON::EDirect) : bool
+  #CheckShift(x : int8_t&, y : int8_t&, direction : COMMON::EDirect) : bool
+
+  #m_field : Field
+  #m_list_player : std::vector<Player>
+  #m_active_user : uint8_t
+  #m_mode_game : COMMON::EGameMode
+}
+
+@enduml

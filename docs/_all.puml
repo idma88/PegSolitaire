@@ -1,0 +1,12 @@
+@startuml PegSolitaire
+
+left to right direction
+
+!include Common/Common.puml
+!include Field/Field.puml
+!include Game/IGame.puml
+!include Game/MultiplayerMode.puml
+!include Game/Player.puml
+!include Game/SingleMode.puml
+
+@enduml

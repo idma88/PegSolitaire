@@ -1,0 +1,15 @@
+@startuml ClassMultiplayerMode
+
+!include IGame.puml
+
+MultiplayerMode --|> IGame
+
+class MultiplayerMode {
+  +MultiplayerMode()
+  +~MultiplayerMode()
+
+  +CreateNewGame() : bool
+  +DoMove(x : uint8_t, y : uint8_t, directions : std::vector<COMMON::EDirect>) : bool
+}
+
+@enduml

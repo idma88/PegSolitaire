@@ -1,0 +1,27 @@
+@startuml ClassField
+
+!include ../Common/Common.puml
+
+class Field {
+    +Field()
+    +~Field()
+
+    +Create(type : COMMON::ETypeField) : bool
+    +Create(width : uint8_t, height : uint8_t, pattern : const std::vector<COMMON::ECell>&) : bool
+    +SetCell(x_field : uint8_t, y_field : uint8_t, value : const COMMON::ECell) : bool
+    +GetField() : std::vector<COMMON::ECell>
+    +GetWidth() : uint8_t
+    +GetHeight() : uint8_t
+    +GetCell(uint8_t x, uint8_t y) : COMMON::ECell
+
+    +{static} MAX_WIDTH  : const uint8_t
+    +{static} MAX_HEIGHT : const uint8_t
+    +{static} MIN_WIDTH  : const uint8_t
+    +{static} MIN_HEIGHT : const uint8_t
+
+    -m_width  : uint8_t
+    -m_height : uint8_t
+    -m_field  : std::vector<COMMON::ECell>
+}
+
+@enduml

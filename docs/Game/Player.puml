@@ -1,0 +1,26 @@
+@startuml ClassPlayer
+
+!include ../Common/Common.puml
+
+class Player {
+  +Player(name : const std::string, score : uint16_t, type : COMMON::EPlayerType)
+  +~Player()
+
+
+  +SetName(name : const std::string&) : bool
+  +SetEssence(type : const COMMON::EPlayerType) : bool
+  +SetBeginScore(score : const uint16_t) : bool
+  +AddPoints(score : const int16_t) : bool
+  +GetName() : std::string
+  +GetEssence() : COMMON::EPlayerType
+  +GetScore() : uint16_t
+  +operator==(lhs : const Player, rhs : const Player) : friend bool
+
+  -m_name : std::string
+  -m_essence : COMMON::EPlayerType
+  -m_score : uint32_t
+
+  -{static} MAX_SCORE : constexpr uint16_t
+}
+
+@enduml

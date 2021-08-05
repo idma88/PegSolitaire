@@ -1,0 +1,34 @@
+@startuml Common
+
+namespace COMMON {
+
+  enum ECell  {
+    LOCK
+    FREE
+    SET
+  }
+
+  enum ETypeField {
+    ENGLISH
+    EUROPEAN
+  }
+
+  enum EPlayerType {
+    HUMAN
+    COMPUTER
+  }
+
+  enum EGameMode {
+    SINGLE
+    MULTIPLAYER
+  }
+
+  enum EDirect {
+    RIGHT
+    LEFT
+    UP
+    DOWN
+  }
+}
+
+@enduml
