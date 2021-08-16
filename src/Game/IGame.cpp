@@ -65,6 +65,12 @@ IGame::SetField(const Field& field)
   m_field = field;
 }
 
+Field
+IGame::GetField()
+{
+  return m_field;
+}
+
 bool
 IGame::CheckMove(uint8_t x,
                  uint8_t y,
