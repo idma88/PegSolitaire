@@ -30,6 +30,8 @@ public:
                       const std::vector<COMMON::EDirect>& directions);
   // Загрузить копию поля
   void SetField(const Field& field);
+  // Получить копию поля
+  Field GetField();
   // Проверка возможности указанного хода/последовательности ходов
   bool CheckMove(uint8_t x,
                  uint8_t y,
