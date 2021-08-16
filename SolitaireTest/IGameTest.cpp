@@ -13,6 +13,10 @@ public:
   IGame igame;
   // Экземпляр класса Field
   Field field;
+  Field field_copy;
+  // Вектор поля
+  std::vector<COMMON::ECell> v_original;
+  std::vector<COMMON::ECell> v_expected;
   // Направления движения
   std::vector<COMMON::EDirect> direct;
 
@@ -40,12 +44,29 @@ TEST_F(IGameTest, CheckingSetPlayerList)
   ASSERT_TRUE(ListPlayerActual == ListPlayerExpected);
 }
 
+TEST_F(IGameTest, CheckingGetField)
+{
+  // Создадим поле для английской версии
+  ASSERT_TRUE(field.Create(COMMON::ETypeField::ENGLISH));
+  // Передадим класс IGame поле
+  igame.SetField(field);
+  // скопируем поле в вектор из оригинала
+  v_original = field.GetField();
+  // вернём объект field из game
+  field_copy = igame.GetField();
+  // скопируем поле в вектор из копии
+  v_expected = field_copy.GetField();
+  // сравним вектора
+  ASSERT_EQ(v_original, v_expected);
+}
+
 TEST_F(IGameTest, CheckingFieldMove)
 {
   // Создадим поле для английской версии
   ASSERT_TRUE(field.Create(COMMON::ETypeField::ENGLISH));
   // Передадим класс IGame поле
   igame.SetField(field);
+
   // Проверим что не конец игры
   ASSERT_TRUE(!igame.IsGameOver());
 
@@ -84,10 +105,9 @@ TEST_F(IGameTest, CheckingFieldMove)
 
   // Установим направление влево
   direct = { COMMON::EDirect::LEFT };
-  // Проверим что туда можно походить
+  // Сделаем ход
   ASSERT_TRUE(igame.DoMove(5, 3, direct));
 
-  // Проверим не допустимый вариант хода ещё раз влево
   // Проверим что влево нельзя походить из координаты 3,3
   ASSERT_FALSE(igame.DoMove(3, 3, direct));
 
