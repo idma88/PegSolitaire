@@ -44,7 +44,7 @@ TEST_F(IGameTest, CheckingSetPlayerList)
   ASSERT_TRUE(ListPlayerActual == ListPlayerExpected);
 }
 
-TEST_F(IGameTest, CheckingFieldMove)
+TEST_F(IGameTest, CheckingGetField)
 {
   // Создадим поле для английской версии
   ASSERT_TRUE(field.Create(COMMON::ETypeField::ENGLISH));
@@ -58,6 +58,15 @@ TEST_F(IGameTest, CheckingFieldMove)
   v_expected = field_copy.GetField();
   // сравним вектора
   ASSERT_EQ(v_original, v_expected);
+}
+
+TEST_F(IGameTest, CheckingFieldMove)
+{
+  // Создадим поле для английской версии
+  ASSERT_TRUE(field.Create(COMMON::ETypeField::ENGLISH));
+  // Передадим класс IGame поле
+  igame.SetField(field);
+
   // Проверим что не конец игры
   ASSERT_TRUE(!igame.IsGameOver());
 
