@@ -1,3 +1,4 @@
+#if 0
 #include "../Common/Common.h"
 #include "../Field/Field.h"
 #include "../Game/CoreGame.h"
@@ -158,3 +159,4 @@ main_exp(int argc, char* argv[])
     LOG(ERROR) << "Error!";
   return 0;
 }
+#endif

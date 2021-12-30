@@ -17,6 +17,8 @@ file(GLOB_RECURSE src_headers *.h)
 
 # set(SFML_STATIC_LIBRARIES TRUE)
 
+set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/libs/SFML-2.5.1-windows-vc15-64-bit/")
+
 find_package(
   SFML 2.5
   COMPONENTS system window graphics

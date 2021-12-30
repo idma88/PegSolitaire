@@ -2,18 +2,18 @@
 
 #include <SFML/Graphics.hpp>
 
-class Grid
+class Grid : public sf::Drawable
 {
 public:
   /**
    * @brief Конструктор
    *
-   * @param [in] pTarget Указатель на цель рендеринга
+   * @param [in] coverSize Размер области, покрывающей экран
    * @param [in] cellSize Размер клетки в пикселях
    */
-  Grid(sf::RenderTarget* pTarget, uint32_t cellSize);
+  Grid(sf::Vector2f coverSize, uint32_t cellSize);
 
-  void draw(const sf::RenderStates& states);
+  void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 private:
   /**
@@ -22,11 +22,8 @@ private:
   void CalculatePoints();
 
 private:
-  /// Цель рендеринга
-  sf::RenderTarget* m_pTarget = nullptr;
-
-  /// Размер цели рендеринга
-  sf::Vector2u m_size;
+  /// Размер области, покрывающей экран
+  sf::Vector2f m_size;
 
   /// Размер клетки в пикселях
   uint32_t m_cellSize;

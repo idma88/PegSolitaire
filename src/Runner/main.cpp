@@ -12,12 +12,35 @@
 // Размер поля
 const int SIZE = 7;
 
+/// Минимальный размер игрового поля, ячеек
 const int MIN_CELLS = 7;
+/// Максимальный размер игрового поля, ячеек
 const int MAX_CELLS = 16;
 
+/// Макрос пересчёта градусов в радианы
+#define DEG2RAD(ang) ((ang)*3.14159f / 180.f)
+
+/// Горизонтальный угол наклона, радианы
+const float SKEW_ANGLE_H = DEG2RAD(15.f);
+/// Вертикальный угол наклона, радианы
+const float SKEW_ANGLE_V = DEG2RAD(-5.f);
+
+#pragma region "Размеры активной области"
+/**
+ * Размеры активной области подобраны так, чтобы получить целое количество точек
+ * для размера ячеек. Иниыми словами размеры активной области должны нацело
+ * делиться на { @see MAX_CELLS }
+ */
+/// Ширина активной области
+const int ACTIVE_RECT_WIDTH = 1440;
+/// Высота активной области
+const int ACTIVE_RECT_HEIGHT = 960;
+#pragma endregion
+
+#pragma region "Трансформации"
 template<class T>
 sf::Transform
-MoveToOrigin(sf::Vector2<T> size)
+ToOrigin(sf::Vector2<T> size)
 {
   sf::Transform tr;
   tr.translate(-size.x / 2.f, -size.y / 2.f);
@@ -26,24 +49,52 @@ MoveToOrigin(sf::Vector2<T> size)
 
 template<class T>
 sf::Transform
-ReturnFromOrigin(sf::Vector2<T> size)
+FromOrigin(sf::Vector2<T> size)
 {
-  return MoveToOrigin(size).getInverse();
+  return ToOrigin(size).getInverse();
 }
 
 template<class T>
 sf::Transform
-MoveToScreenCenter(sf::Rect<T> obj, sf::Rect<T> screen)
+AlignToCenter(sf::Rect<T> obj, sf::Rect<T> dest)
 {
   sf::Transform tr;
 
-  sf::Vector2<T> screenCenter(screen.left + screen.width / 2.f,
-                              screen.top + screen.height / 2.f);
+  sf::Vector2<T> destCenter(dest.left + dest.width / 2.f,
+                            dest.top + dest.height / 2.f);
   sf::Vector2<T> objCenter(obj.left + obj.width / 2.f,
                            obj.top + obj.height / 2.f);
 
-  tr.translate(screenCenter.x - objCenter.x, screenCenter.y - objCenter.y);
+  tr.translate(destCenter.x - objCenter.x, destCenter.y - objCenter.y);
   return tr;
+}
+
+// DEPRECATED, DUMMY
+template<class T>
+sf::Transform
+MoveToScreenCenter(sf::Rect<T> obj,
+                   sf::Rect<T> screen){ return AlignToCenter(obj, screen) }
+
+sf::Transform Skew(float angleH, float angleV)
+{
+  return sf::Transform{ 1.f,          sinf(angleH), 0.f, /**/
+                        sinf(angleV), 1.f,          0.f, /**/
+                        0.f,          0.f,          1.f };
+}
+#pragma endregion
+
+/**
+ * @brief Получение размеров прямоугольника
+ *
+ * @tparam T Тип данных
+ * @param [in] rect Прямоугольник
+ * @return Возвращает вектор с размерами указанного прямоугольника
+ */
+template<class T>
+sf::Vector2<T>
+RectSize(const sf::Rect<T>& rect)
+{
+  return sf::Vector2<T>(rect.width, rect.height);
 }
 
 template<class T>
@@ -95,6 +146,7 @@ CalculatePoints(sf::VertexArray& m_points,
 int
 main(int argc, char* argv[])
 {
+#pragma region "Init"
   google::InitGoogleLogging(argv[0]);
   FLAGS_alsologtostderr = true;
 
@@ -107,39 +159,85 @@ main(int argc, char* argv[])
   Field _field;
   bool trueCreate;
   _field.Create(COMMON::ETypeField::ENGLISH);
-
   trueCreate = _field.SetCell(SIZE, SIZE, COMMON::ECell::SET);
+#pragma endregion
 
-  sf::ContextSettings settings;
-  settings.antialiasingLevel = 2;
-  sf::RenderWindow window(
-    sf::VideoMode(1920, 1080), "Back", sf::Style::Fullscreen, settings);
+#pragma region "Размеры, прямоугольники, области и т.д."
+  /// Видео режим, размеры которого совпадают с текущим разрешением
+  sf::VideoMode screenMode = sf::VideoMode::getDesktopMode();
 
   /// Прямоугольник размером с экран
-  sf::FloatRect ScreenRect(0, 0, window.getSize().x, window.getSize().y);
+  sf::FloatRect screenRect(0, 0, screenMode.width, screenMode.height);
 
+  /**
+   * @brief Активная область
+   * @note Координаты фиксированы и условны, т.е. не зависят от разрешения
+   * экрана. Все положения и размеры элементов (меню, игровое поле)
+   * расчитываются в этих координатах
+   */
+  sf::FloatRect activeRect(0, 0, ACTIVE_RECT_WIDTH, ACTIVE_RECT_HEIGHT);
+  sf::Vector2f activeRectSize = RectSize(activeRect);
+
+  /**
+   * @brief Матрица скоса
+   * @note Применение этого преобразования не зависит от размеров объекта и
+   * потому может быть рассчитано лишь раз
+   */
+  sf::Transform trSkew = Skew(SKEW_ANGLE_H, SKEW_ANGLE_V);
+
+  /***** Расчёт главной трансформации *****/
+
+  /// Прямоугольник активной области, после применения скоса
+  sf::FloatRect activeRectAfterTransform =
+    (trSkew * ToOrigin(activeRectSize)).transformRect(activeRect);
+
+  /// Рассчитываем коэффициент маштабирования так, чтобы активная область после
+  /// применения скоса, была вписана в экран
+  float scaleFactor =
+    std::min(screenRect.width / activeRectAfterTransform.width,
+             screenRect.height / activeRectAfterTransform.height);
+
+  /**
+   * @brief Матрица масштабирования
+   */
+  sf::Transform trScale = sf::Transform().scale(scaleFactor, scaleFactor);
+
+  /***** Расчёт размеров области, покрывающей экран *****/
+  sf::FloatRect coverRect =
+    ToOrigin(RectSize(screenRect)).transformRect(screenRect);
+  coverRect = (trScale * trSkew).getInverse().transformRect(coverRect);
+
+  sf::Vector2f coverSize = RectSize(coverRect);
+
+  uint32_t cellSize =
+    std::min(ACTIVE_RECT_WIDTH, ACTIVE_RECT_HEIGHT) / MAX_CELLS;
+
+#pragma endregion
+
+#pragma region "Инициализация окна"
+  sf::ContextSettings settings;
+  settings.antialiasingLevel = 8;
+  sf::RenderWindow window(screenMode, "Back", sf::Style::Fullscreen, settings);
+#pragma endregion
+
+#if 0
   /// Трансформация перемещения в начало координат
-  sf::Transform trBegin = MoveToOrigin(window.getSize());
-
-  /// Пересчёт углов наклона в радианы
-  float angleH = -15.f * 3.1419f / 180.f;
-  float angleV = 5.f * 3.1419f / 180.f;
+  sf::Transform trBegin = ToOrigin(window.getSize());
 
   /// Матрица преобразования (для скосов)
-  sf::Transform trSkew{ 1.f, sinf(angleH), 0.f, sinf(angleV), 1.f,
-                        0.f, 0.f,          0.f, 1.f };
+  sf::Transform trSkew = Skew(SKEW_ANGLE_H, SKEW_ANGLE_V);
 
   /// Трансформация перемещения обратно
-  sf::Transform trBack = ReturnFromOrigin(window.getSize());
+  sf::Transform trBack = FromOrigin(window.getSize());
 
   /// Описывающий прямоугольник вокруг прямоугольник размера с экран к которому
   /// применён скос
-  sf::FloatRect tmpRect = (trSkew * trBegin).transformRect(ScreenRect);
+  sf::FloatRect tmpRect = (trSkew * trBegin).transformRect(screenRect);
 
   /// Коэффициент маштабирования Размеры экран / Размер прямоугольника
   /// описывающего прямоугольник с преобразованием
-  float scale = std::min(ScreenRect.width / tmpRect.width,
-                         ScreenRect.height / tmpRect.height);
+  float scale = std::min(screenRect.width / tmpRect.width,
+                         screenRect.height / tmpRect.height);
 
   /// Трансформация для маштабирования
   sf::Transform trScale = sf::Transform::Identity;
@@ -153,12 +251,12 @@ main(int argc, char* argv[])
   /// Трансформация для расчёта размеров всей области скоса для экрана
   sf::Transform trInv = tr.getInverse();
   /// Готовый прямоугольник для скоса и фона
-  sf::FloatRect greenRect = trInv.transformRect(ScreenRect);
+  sf::FloatRect greenRect = trInv.transformRect(screenRect);
   /// Сбросим координаты
   greenRect.left = 0;
   greenRect.top = 0;
 
-  int CellSize = ScreenRect.height / MAX_CELLS;
+  int CellSize = screenRect.height / MAX_CELLS;
 
   sf::RectangleShape green_rect(
     sf::Vector2f(greenRect.width, greenRect.height));
@@ -169,7 +267,7 @@ main(int argc, char* argv[])
   green_rect.setOutlineThickness(2.f);
 
   /// Сместим центры зелёного прямоугольника и экрана
-  MoveToScreenCenter(&green_rect, ScreenRect);
+  MoveToScreenCenter(&green_rect, screenRect);
 
   sf::Vector2f sizeGreenRect = green_rect.getSize();
   sf::Vector2f positionGreenRect = green_rect.getPosition();
@@ -182,24 +280,74 @@ main(int argc, char* argv[])
   sf::VertexArray pointArray(sf::Lines);
 
   CalculatePoints(pointArray, sizeGreenRect, positionGreenRect, CellSize);
+#endif // 0
+
+  Grid grid(coverSize, cellSize);
+
+  sf::Transform gridTr = AlignToCenter(coverRect, screenRect) *
+                         /* FromOrigin(coverSize) * */ trScale * trSkew *
+                         ToOrigin(coverSize);
+  sf::Transform activeTr = AlignToCenter(activeRect, screenRect) *
+                           FromOrigin(activeRectSize) * trScale * trSkew *
+                           ToOrigin(activeRectSize);
+
+  sf::RectangleShape activeRectShape(activeRectSize);
+  activeRectShape.setFillColor(sf::Color::Transparent);
+  activeRectShape.setOutlineColor(sf::Color::Green);
+  activeRectShape.setOutlineThickness(4.f);
+
+  sf::RectangleShape oneCell(sf::Vector2f(cellSize, cellSize));
+
+  int selectX = 3;
+  int selectY = 2;
+  oneCell.move(cellSize * selectX, cellSize * selectY);
+
+#pragma region "[DEBUG] Центр экрана"
+  sf::VertexArray centerPnt(sf::Lines, 4);
+
+  centerPnt[0].position = sf::Vector2f(0, screenRect.height / 2);
+  centerPnt[1].position = sf::Vector2f(screenRect.width, screenRect.height / 2);
+  centerPnt[2].position = sf::Vector2f(screenRect.width / 2, 0);
+  centerPnt[3].position = sf::Vector2f(screenRect.width / 2, screenRect.height);
+
+  centerPnt[0].color = sf::Color::Magenta;
+  centerPnt[1].color = sf::Color::Magenta;
+  centerPnt[2].color = sf::Color::Magenta;
+  centerPnt[3].color = sf::Color::Magenta;
+#pragma endregion
 
   while (window.isOpen()) {
     window.clear(sf::Color::Black);
-    // window.draw(green_rect);
-    window.draw(pointArray);
-    window.draw(&point, 1, sf::Points);
+
+    window.draw(grid, gridTr);
+    window.draw(activeRectShape, activeTr);
+    window.draw(oneCell, activeTr);
+
+    window.draw(centerPnt);
+
     window.display();
 
     sf::Event event;
     while (window.pollEvent(event)) {
-      if (event.type == sf::Event::Closed)
-        window.close();
+      switch (event.type) {
+        case sf::Event::Closed:
+          window.close();
+          break;
+        case sf::Event::KeyPressed:
+          if (event.key.code == sf::Keyboard::Escape)
+            window.close();
+          break;
+        default:
+          break;
+      }
     }
   }
 
+#if 0
   if (trueCreate)
     LOG(INFO) << "Success!";
   else
     LOG(ERROR) << "Error!";
   return 0;
+#endif // 0
 }
