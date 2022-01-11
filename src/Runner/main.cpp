@@ -12,14 +12,11 @@
 // Размер поля
 const int SIZE = 7;
 
-/// Минимальный размер игрового поля, ячеек
-const int MIN_CELLS = 7;
 /// Максимальный размер игрового поля, ячеек
 const int MAX_CELLS = 16;
 
 /// Макрос пересчёта градусов в радианы
 #define DEG2RAD(ang) ((ang)*3.14159f / 180.f)
-
 /// Горизонтальный угол наклона, радианы
 const float SKEW_ANGLE_H = DEG2RAD(15.f);
 /// Вертикальный угол наклона, радианы
@@ -36,6 +33,28 @@ const int ACTIVE_RECT_WIDTH = 1440;
 /// Высота активной области
 const int ACTIVE_RECT_HEIGHT = 960;
 #pragma endregion
+
+/**
+ * @brief Получение размеров прямоугольника
+ *
+ * @tparam T Тип данных
+ * @param [in] rect Прямоугольник
+ * @return Возвращает вектор с размерами указанного прямоугольника
+ */
+template<class T>
+sf::Vector2<T>
+RectSize(const sf::Rect<T>& rect)
+{
+  return sf::Vector2<T>(rect.width, rect.height);
+}
+
+sf::Transform
+Skew(float angleH, float angleV)
+{
+  return sf::Transform{ 1.f,          sinf(angleH), 0.f, /**/
+                        sinf(angleV), 1.f,          0.f, /**/
+                        0.f,          0.f,          1.f };
+}
 
 #pragma region "Трансформации"
 template<class T>
@@ -67,80 +86,6 @@ AlignToCenter(sf::Rect<T> obj, sf::Rect<T> dest)
 
   tr.translate(destCenter.x - objCenter.x, destCenter.y - objCenter.y);
   return tr;
-}
-
-// DEPRECATED, DUMMY
-template<class T>
-sf::Transform
-MoveToScreenCenter(sf::Rect<T> obj,
-                   sf::Rect<T> screen){ return AlignToCenter(obj, screen) }
-
-sf::Transform Skew(float angleH, float angleV)
-{
-  return sf::Transform{ 1.f,          sinf(angleH), 0.f, /**/
-                        sinf(angleV), 1.f,          0.f, /**/
-                        0.f,          0.f,          1.f };
-}
-#pragma endregion
-
-/**
- * @brief Получение размеров прямоугольника
- *
- * @tparam T Тип данных
- * @param [in] rect Прямоугольник
- * @return Возвращает вектор с размерами указанного прямоугольника
- */
-template<class T>
-sf::Vector2<T>
-RectSize(const sf::Rect<T>& rect)
-{
-  return sf::Vector2<T>(rect.width, rect.height);
-}
-
-template<class T>
-void
-MoveToScreenCenter(sf::RectangleShape* obj, sf::Rect<T> screen)
-{
-  sf::Vector2<T> screenCenter(screen.left + screen.width / 2.f,
-                              screen.top + screen.height / 2.f);
-
-  sf::Vector2f positionObj = obj->getPosition();
-  sf::Vector2f sizeObj = obj->getSize();
-
-  sf::Vector2<T> objCenter(positionObj.x + sizeObj.x / 2.f,
-                           positionObj.y + sizeObj.y / 2.f);
-
-  float offset_x = screenCenter.x - objCenter.x;
-  float offset_y = screenCenter.y - objCenter.y;
-
-  obj->setPosition(offset_x, offset_y);
-}
-
-void
-CalculatePoints(sf::VertexArray& m_points,
-                sf::Vector2f m_size,
-                sf::Vector2f position,
-                uint32_t m_cellSize)
-{
-  /// Кол-во точек для всех линий
-  m_points.resize(2 * ((m_size.x + m_size.y) / m_cellSize + 2));
-
-  uint32_t index = 0;
-
-  /// Смещение к центру по оси х
-  uint32_t offset = uint32_t(m_size.x / 2) % m_cellSize;
-  for (float i = position.x; i < (m_size.x + position.x);
-       i += m_cellSize, index += 2) {
-    m_points[index].position = sf::Vector2f(i + offset, 0);
-    m_points[index + 1].position = sf::Vector2f(i + offset, m_size.y);
-  }
-  /// Смещение к центру по оси y
-  offset = uint32_t(m_size.y / 2) % m_cellSize;
-  for (float i = position.y; i < m_size.y + position.y;
-       i += m_cellSize, index += 2) {
-    m_points[index].position = sf::Vector2f(0, i + offset);
-    m_points[index + 1].position = sf::Vector2f(m_size.x, i + offset);
-  }
 }
 
 int
@@ -220,68 +165,6 @@ main(int argc, char* argv[])
   sf::RenderWindow window(screenMode, "Back", sf::Style::Fullscreen, settings);
 #pragma endregion
 
-#if 0
-  /// Трансформация перемещения в начало координат
-  sf::Transform trBegin = ToOrigin(window.getSize());
-
-  /// Матрица преобразования (для скосов)
-  sf::Transform trSkew = Skew(SKEW_ANGLE_H, SKEW_ANGLE_V);
-
-  /// Трансформация перемещения обратно
-  sf::Transform trBack = FromOrigin(window.getSize());
-
-  /// Описывающий прямоугольник вокруг прямоугольник размера с экран к которому
-  /// применён скос
-  sf::FloatRect tmpRect = (trSkew * trBegin).transformRect(screenRect);
-
-  /// Коэффициент маштабирования Размеры экран / Размер прямоугольника
-  /// описывающего прямоугольник с преобразованием
-  float scale = std::min(screenRect.width / tmpRect.width,
-                         screenRect.height / tmpRect.height);
-
-  /// Трансформация для маштабирования
-  sf::Transform trScale = sf::Transform::Identity;
-  trScale.scale(scale, scale);
-
-  /// Главное преобразование
-  sf::Transform tr = sf::Transform::Identity;
-  /// Порядок действий записывается наоборот т.е от начала до конца
-  tr = trBack * trScale * trSkew * trBegin;
-
-  /// Трансформация для расчёта размеров всей области скоса для экрана
-  sf::Transform trInv = tr.getInverse();
-  /// Готовый прямоугольник для скоса и фона
-  sf::FloatRect greenRect = trInv.transformRect(screenRect);
-  /// Сбросим координаты
-  greenRect.left = 0;
-  greenRect.top = 0;
-
-  int CellSize = screenRect.height / MAX_CELLS;
-
-  sf::RectangleShape green_rect(
-    sf::Vector2f(greenRect.width, greenRect.height));
-
-  // green_rect.seCol(sf::Color::Transparent);
-  green_rect.setFillColor(sf::Color::Green);
-  green_rect.setOutlineColor(sf::Color::Blue);
-  green_rect.setOutlineThickness(2.f);
-
-  /// Сместим центры зелёного прямоугольника и экрана
-  MoveToScreenCenter(&green_rect, screenRect);
-
-  sf::Vector2f sizeGreenRect = green_rect.getSize();
-  sf::Vector2f positionGreenRect = green_rect.getPosition();
-
-  /// Середина зелёного прямоугольника в координатах экрана
-  sf::Vertex point(sf::Vector2f(sizeGreenRect.x / 2 + positionGreenRect.x,
-                                sizeGreenRect.y / 2 + positionGreenRect.y),
-                   sf::Color::Red);
-
-  sf::VertexArray pointArray(sf::Lines);
-
-  CalculatePoints(pointArray, sizeGreenRect, positionGreenRect, CellSize);
-#endif // 0
-
   Grid grid(coverSize, cellSize);
 
   sf::Transform gridTr = AlignToCenter(coverRect, screenRect) *
@@ -296,11 +179,30 @@ main(int argc, char* argv[])
   activeRectShape.setOutlineColor(sf::Color::Green);
   activeRectShape.setOutlineThickness(4.f);
 
-  sf::RectangleShape oneCell(sf::Vector2f(cellSize, cellSize));
+  sf::RectangleShape rectField(sf::Vector2f(cellSize * SIZE, cellSize * SIZE));
 
+  /// Расчёт кол-ва клеточек по x и y
+  int countCellX = (activeRectSize.x / cellSize);
+  int countCellY = (activeRectSize.y / cellSize);
+
+  /// Расчёт смещений клеточек для игрового поля
+  int offsetActiveX = floor(countCellX / 2) - floor(SIZE / 2); // 8
+  int offsetActiveY = floor(countCellY / 2) - floor(SIZE / 2); // 4
+
+  int offsetGameFieldX = cellSize * offsetActiveX;
+  int offsetGameFieldY = cellSize * offsetActiveY;
+
+  rectField.move(cellSize * offsetActiveX, cellSize * offsetActiveY);
+  rectField.setFillColor(sf::Color::Transparent);
+  rectField.setOutlineColor(sf::Color::Blue);
+  rectField.setOutlineThickness(4.f);
+
+  sf::RectangleShape oneCell(sf::Vector2f(cellSize - 1, cellSize - 1));
   int selectX = 3;
   int selectY = 2;
-  oneCell.move(cellSize * selectX, cellSize * selectY);
+  oneCell.move(cellSize * selectX + offsetGameFieldX,
+               cellSize * selectY + offsetGameFieldY);
+  oneCell.setFillColor(sf::Color::Red);
 
 #pragma region "[DEBUG] Центр экрана"
   sf::VertexArray centerPnt(sf::Lines, 4);
@@ -321,7 +223,10 @@ main(int argc, char* argv[])
 
     window.draw(grid, gridTr);
     window.draw(activeRectShape, activeTr);
+
     window.draw(oneCell, activeTr);
+    /// Отрисовка синего прямоугольника, а именно самого игрового поля
+    window.draw(rectField, activeTr);
 
     window.draw(centerPnt);
 
