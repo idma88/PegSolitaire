@@ -6,11 +6,12 @@ set(field_dir ../Field/)
 set(common_dir ../Common/)
 set(game_dir ../Game/)
 set(ui_dir ../UI/)
+set(utils_dir ../Utils/)
 
 file(GLOB_RECURSE common_sources ${field_dir}*.cpp ${common_dir}*.cpp
-     ${game_dir}*.cpp ${ui_dir}*.cpp)
+     ${game_dir}*.cpp ${ui_dir}*.cpp ${utils_dir}*.cpp)
 file(GLOB_RECURSE common_headers ${field_dir}*.h ${common_dir}*.h
-     ${game_dir}*.h ${ui_dir}*.h)
+     ${game_dir}*.h ${ui_dir}*.h ${utils_dir}*.h)
 
 file(GLOB_RECURSE src_sources *.cpp)
 file(GLOB_RECURSE src_headers *.h)

@@ -4,6 +4,7 @@
 #include "../Game/Player.h"
 
 #include "../UI/Grid.h"
+#include "../UI/Test.h"
 
 #include <SFML/Graphics.hpp>
 // #include <glog/logging.h>
@@ -218,17 +219,41 @@ main(int argc, char* argv[])
   centerPnt[3].color = sf::Color::Magenta;
 #pragma endregion
 
+#pragma region "Text"
+  /// шрифт
+  sf::Font font;
+  /// передаем нашему шрифту файл шрифта
+  font.loadFromFile("CyrilicOld.ttf");
+  /// создаем объект текст. закидываем в объект текст строку, шрифт, размер
+  sf::Text text("", font, 40);
+  /// шрифта(в пикселях);//сам объект текст (не строка)
+  /// покрасили текст в красный. если убрать эту
+  /// строку, то по умолчанию он белый
+  text.setColor(sf::Color::Red);
+  /// sжирный и подчеркнутый текст. по умолчанию он
+  /// "худой":)) и не подчеркнутый
+  text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+  text.setString("Start Game");
+  text.setPosition(activeRectSize.x / 2, activeRectSize.y / 2);
+#pragma endregion
+
+  Test test(activeRect, cellSize);
+
   while (window.isOpen()) {
     window.clear(sf::Color::Black);
 
     window.draw(grid, gridTr);
     window.draw(activeRectShape, activeTr);
 
+    window.draw(test, activeTr);
+
     window.draw(oneCell, activeTr);
     /// Отрисовка синего прямоугольника, а именно самого игрового поля
     window.draw(rectField, activeTr);
 
     window.draw(centerPnt);
+
+    window.draw(text, activeTr);
 
     window.display();
 
