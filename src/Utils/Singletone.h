@@ -5,8 +5,6 @@
  */
 #pragma once
 
-namespace CAFS70 {
-
 /**
  * @brief Шаблонный класс реализующий паттерн Одиночка
  *
@@ -55,4 +53,3 @@ public:
    */
   Singleton& operator=(Singleton&&) = delete;
 };
-}

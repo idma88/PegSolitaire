@@ -10,9 +10,6 @@
 // #include <glog/logging.h>
 #include <iostream>
 
-// Размер поля
-const int SIZE = 7;
-
 /// Максимальный размер игрового поля, ячеек
 const int MAX_CELLS = 16;
 
@@ -102,10 +99,17 @@ main(int argc, char* argv[])
 
   setlocale(LC_ALL, "Russian");
 
-  Field _field;
-  bool trueCreate;
-  _field.Create(COMMON::ETypeField::ENGLISH);
-  trueCreate = _field.SetCell(SIZE, SIZE, COMMON::ECell::SET);
+  Field& fld = Singleton<Field>::GetInstance();
+  fld.Create(COMMON::ETypeField::ENGLISH);
+
+  // Размер поля
+  const int SIZE = fld.GetWidth();
+
+  // Field _field;
+  // bool trueCreate;
+  // _field.Create(COMMON::ETypeField::ENGLISH);
+  // trueCreate = _field.SetCell(SIZE, SIZE, COMMON::ECell::SET);
+
 #pragma endregion
 
 #pragma region "Размеры, прямоугольники, области и т.д."
@@ -129,7 +133,8 @@ main(int argc, char* argv[])
    * @note Применение этого преобразования не зависит от размеров объекта и
    * потому может быть рассчитано лишь раз
    */
-  sf::Transform trSkew = Skew(SKEW_ANGLE_H, SKEW_ANGLE_V);
+  sf::Transform trSkew =
+    /* sf::Transform::Identity; */ Skew(SKEW_ANGLE_H, SKEW_ANGLE_V);
 
   /***** Расчёт главной трансформации *****/
 
@@ -180,7 +185,8 @@ main(int argc, char* argv[])
   activeRectShape.setOutlineColor(sf::Color::Green);
   activeRectShape.setOutlineThickness(4.f);
 
-  sf::RectangleShape rectField(sf::Vector2f(cellSize * SIZE, cellSize * SIZE));
+  sf::RectangleShape rectField(
+    sf::Vector2f((cellSize * SIZE) - 1, (cellSize * SIZE) - 1));
 
   /// Расчёт кол-ва клеточек по x и y
   int countCellX = (activeRectSize.x / cellSize);
@@ -193,10 +199,10 @@ main(int argc, char* argv[])
   int offsetGameFieldX = cellSize * offsetActiveX;
   int offsetGameFieldY = cellSize * offsetActiveY;
 
-  rectField.move(cellSize * offsetActiveX, cellSize * offsetActiveY);
+  rectField.move((cellSize * offsetActiveX), (cellSize * offsetActiveY));
   rectField.setFillColor(sf::Color::Transparent);
-  rectField.setOutlineColor(sf::Color::Blue);
-  rectField.setOutlineThickness(4.f);
+  rectField.setOutlineColor(sf::Color::White);
+  rectField.setOutlineThickness(6.f);
 
   sf::RectangleShape oneCell(sf::Vector2f(cellSize - 1, cellSize - 1));
   int selectX = 3;
@@ -232,28 +238,32 @@ main(int argc, char* argv[])
   text.setColor(sf::Color::Red);
   /// sжирный и подчеркнутый текст. по умолчанию он
   /// "худой":)) и не подчеркнутый
-  text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+  text.setStyle(sf::Text::Bold);
   text.setString("Start Game");
   text.setPosition(activeRectSize.x / 2, activeRectSize.y / 2);
 #pragma endregion
 
   Test test(activeRect, cellSize);
+  test.SetOffsetGame(offsetGameFieldX, offsetGameFieldY);
 
   while (window.isOpen()) {
-    window.clear(sf::Color::Black);
+    // window.clear(sf::Color::Black);
+    window.clear(sf::Color(9, 133, 205));
 
     window.draw(grid, gridTr);
-    window.draw(activeRectShape, activeTr);
+    // отрисовка рамки активной области
+    // window.draw(activeRectShape, activeTr);
 
     window.draw(test, activeTr);
 
-    window.draw(oneCell, activeTr);
+    // window.draw(oneCell, activeTr);
     /// Отрисовка синего прямоугольника, а именно самого игрового поля
     window.draw(rectField, activeTr);
 
-    window.draw(centerPnt);
-
-    window.draw(text, activeTr);
+    // крест по центру
+    // window.draw(centerPnt);
+    // пример текста
+    // window.draw(text, activeTr);
 
     window.display();
 
