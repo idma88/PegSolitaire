@@ -11,8 +11,7 @@ bool
 Field::Create(COMMON::ETypeField type)
 {
   // Проверка типа поля
-  if ((type != COMMON::ETypeField::ENGLISH) &&
-      (type != COMMON::ETypeField::EUROPEAN)) {
+  if ((type != COMMON::ETypeField::ENGLISH) && (type != COMMON::ETypeField::EUROPEAN)) {
     LOG(ERROR) << "Field::Create : Invalid field type value in Create()!";
     return false;
   }
@@ -27,43 +26,39 @@ Field::Create(COMMON::ETypeField type)
   switch (type) {
     // Отрисовка поля для Английской версии
     case COMMON::ETypeField::ENGLISH:
-      m_field = { COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::SET,
-                  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::LOCK,
-                  COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::LOCK,
-                  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-                  COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::SET,
-                  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-                  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-                  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-                  COMMON::ECell::FREE, COMMON::ECell::SET,  COMMON::ECell::SET,
-                  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-                  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-                  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::LOCK,
-                  COMMON::ECell::LOCK, COMMON::ECell::SET,  COMMON::ECell::SET,
-                  COMMON::ECell::SET,  COMMON::ECell::LOCK, COMMON::ECell::LOCK,
-                  COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::SET,
-                  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::LOCK,
-                  COMMON::ECell::LOCK };
+      m_field = {
+        COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::SET,  COMMON::ECell::SET,
+        COMMON::ECell::SET,  COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::LOCK,
+        COMMON::ECell::LOCK, COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
+        COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::SET,  COMMON::ECell::SET,
+        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
+        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
+        COMMON::ECell::FREE, COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
+        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
+        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::LOCK,
+        COMMON::ECell::LOCK, COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
+        COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::LOCK,
+        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::LOCK,
+        COMMON::ECell::LOCK
+      };
       break;
     // Отрисовка поля для Европейской версии
     case COMMON::ETypeField::EUROPEAN:
-      m_field = { COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::SET,
-                  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::LOCK,
-                  COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::SET,
-                  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-                  COMMON::ECell::SET,  COMMON::ECell::LOCK, COMMON::ECell::SET,
-                  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-                  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-                  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-                  COMMON::ECell::FREE, COMMON::ECell::SET,  COMMON::ECell::SET,
-                  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-                  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-                  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::LOCK,
-                  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-                  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::LOCK,
-                  COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::SET,
-                  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::LOCK,
-                  COMMON::ECell::LOCK };
+      m_field = {
+        COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::SET,  COMMON::ECell::SET,
+        COMMON::ECell::SET,  COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::LOCK,
+        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
+        COMMON::ECell::SET,  COMMON::ECell::LOCK, COMMON::ECell::SET,  COMMON::ECell::SET,
+        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
+        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
+        COMMON::ECell::FREE, COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
+        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
+        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::LOCK,
+        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
+        COMMON::ECell::SET,  COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::LOCK,
+        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::LOCK,
+        COMMON::ECell::LOCK
+      };
       break;
   }
 
@@ -71,13 +66,10 @@ Field::Create(COMMON::ETypeField type)
 }
 
 bool
-Field::Create(uint8_t width,
-              uint8_t height,
-              const std::vector<COMMON::ECell>& pattern)
+Field::Create(uint8_t width, uint8_t height, const std::vector<COMMON::ECell>& pattern)
 {
   if ((width > MAX_WIDTH) || (height > MAX_HEIGHT)) {
-    LOG(ERROR)
-      << "Field::Create : Сustom field is larger than maximum constants!";
+    LOG(ERROR) << "Field::Create : Сustom field is larger than maximum constants!";
     return false;
   }
 
@@ -89,8 +81,7 @@ Field::Create(uint8_t width,
 
   // Проверяем вектор на соответствие размера
   if (pattern.size() != (width * height)) {
-    LOG(ERROR)
-      << "Field::Create : Vector size does not fit the generated field!";
+    LOG(ERROR) << "Field::Create : Vector size does not fit the generated field!";
     return false;
   }
 

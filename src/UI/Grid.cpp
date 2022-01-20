@@ -1,9 +1,19 @@
 #include "Grid.h"
 
+Grid::Grid() {}
+
 Grid::Grid(sf::Vector2f coverSize, uint32_t cellSize)
   : m_size(coverSize)
   , m_points(sf::Lines)
 {
+  m_cellSize = cellSize < 2 ? 2 : cellSize;
+  CalculatePoints();
+}
+
+void
+Grid::SetSize(sf::Vector2f coverSize, uint32_t cellSize)
+{
+  m_size = coverSize;
   m_cellSize = cellSize < 2 ? 2 : cellSize;
   CalculatePoints();
 }
@@ -30,10 +40,14 @@ Grid::CalculatePoints()
     m_points[index].position = sf::Vector2f((float)(i + offset), 0);
     m_points[index + 1].position = sf::Vector2f((float)(i + offset), m_size.y);
   }
+
   // Смещение к центру по оси y
   offset = (int32_t)(m_size.y / 2.f) % m_cellSize;
   for (int32_t i = 0; i < m_size.y; i += m_cellSize, index += 2) {
     m_points[index].position = sf::Vector2f(0, (float)(i + offset));
     m_points[index + 1].position = sf::Vector2f(m_size.x, (float)(i + offset));
   }
+
+  for (int32_t i = 0; i < cnt; ++i)
+    m_points[i].color = sf::Color::White;
 }

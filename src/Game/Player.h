@@ -1,12 +1,14 @@
 #pragma once
 
+#include <iostream>
+#include <string>
+
+#include <glog/logging.h>
+
 #include "../Common/Common.h"
 #include "../Field/Field.h"
 #include "stdint.h"
 
-#include <glog/logging.h>
-#include <iostream>
-#include <string>
 
 class Player
 {

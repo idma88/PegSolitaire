@@ -1,13 +1,14 @@
 #pragma once
 
-#include "../Common/Common.h"
-#include "stdint.h"
-
 #include <algorithm>
-#include <glog/logging.h>
 #include <iostream>
 #include <memory>
 #include <vector>
+
+#include <glog/logging.h>
+
+#include "../Common/Common.h"
+#include "stdint.h"
 
 class Field
 {
@@ -21,9 +22,7 @@ public:
   // Функция создания поля для EN и EU
   bool Create(COMMON::ETypeField type);
   // Функция создания произвольного поля
-  bool Create(uint8_t width,
-              uint8_t height,
-              const std::vector<COMMON::ECell>& pattern);
+  bool Create(uint8_t width, uint8_t height, const std::vector<COMMON::ECell>& pattern);
   // Функция взаимодействия с ячейкой
   bool SetCell(uint8_t x_field, uint8_t y_field, const COMMON::ECell value);
   // Функция получения игрового поля

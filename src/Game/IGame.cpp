@@ -16,17 +16,14 @@ IGame::CreateNewGame()
     return false;
   }
   // Должен быть один игрок в одиночном режиме
-  if ((m_list_player.size() != 1) &&
-      (m_mode_game == COMMON::EGameMode::SINGLE)) {
-    LOG(WARNING)
-      << "IGame::CreateNewGame : m_list_player != 1 and single mode!";
+  if ((m_list_player.size() != 1) && (m_mode_game == COMMON::EGameMode::SINGLE)) {
+    LOG(WARNING) << "IGame::CreateNewGame : m_list_player != 1 and single mode!";
     return false;
   }
   // Должно быть больше одного игрока в мультиплеере
   if (((m_list_player.size() <= 1) || (m_list_player.size() > 4)) &&
       (m_mode_game == COMMON::EGameMode::MULTIPLAYER)) {
-    LOG(WARNING)
-      << "IGame::CreateNewGame : m_list_player < 1 and multiplayer mode!";
+    LOG(WARNING) << "IGame::CreateNewGame : m_list_player < 1 and multiplayer mode!";
     return false;
   }
   // Проверим поле на нулевые размеры
@@ -39,21 +36,16 @@ IGame::CreateNewGame()
 }
 
 bool
-IGame::DoMove(uint8_t x,
-              uint8_t y,
-              const std::vector<COMMON::EDirect>& directions)
+IGame::DoMove(uint8_t x, uint8_t y, const std::vector<COMMON::EDirect>& directions)
 {
   // Проверим что последовательность ходов возможна
-  if (!CheckMove(x, y, directions))
-    return false;
+  if (!CheckMove(x, y, directions)) return false;
   // Проходимся по списку направлений и меняем фишки
   for (auto dir = directions.begin(); dir != directions.end(); ++dir) {
     // В случае если нет возможности куда то походить будет false
-    if (!DoMove(x, y, *dir, m_field))
-      return false;
+    if (!DoMove(x, y, *dir, m_field)) return false;
     // Сдвигаем координаты на ход который походили
-    if (!MoveShift(x, y, *dir))
-      return false;
+    if (!MoveShift(x, y, *dir)) return false;
   }
 
   return true;
@@ -72,20 +64,16 @@ IGame::GetField()
 }
 
 bool
-IGame::CheckMove(uint8_t x,
-                 uint8_t y,
-                 const std::vector<COMMON::EDirect>& directions)
+IGame::CheckMove(uint8_t x, uint8_t y, const std::vector<COMMON::EDirect>& directions)
 {
   // скопируем объект
   Field copy_field = m_field;
 
   for (auto dir = directions.begin(); dir != directions.end(); ++dir) {
     // В случае если нет возможности куда то походить будет false
-    if (!DoMove(x, y, *dir, copy_field))
-      return false;
+    if (!DoMove(x, y, *dir, copy_field)) return false;
     // Сдвигаем координаты на ход который походили
-    if (!MoveShift(x, y, *dir))
-      return false;
+    if (!MoveShift(x, y, *dir)) return false;
   }
 
   return true;
@@ -105,10 +93,8 @@ IGame::CheckMove(uint8_t x, uint8_t y, COMMON::EDirect direction, Field& field)
   int8_t xFar = (int8_t)x + 2 * xShift;
   int8_t yFar = (int8_t)y + 2 * yShift;
 
-  if ((xFar < 0) || (xFar >= field.GetWidth()) || (yFar < 0) ||
-      (yFar >= field.GetHeight())) {
-    LOG(WARNING)
-      << "IGame::CheckMove : Checking for negative numbers and out of range";
+  if ((xFar < 0) || (xFar >= field.GetWidth()) || (yFar < 0) || (yFar >= field.GetHeight())) {
+    LOG(WARNING) << "IGame::CheckMove : Checking for negative numbers and out of range";
     return false;
   }
 
@@ -210,8 +196,7 @@ IGame::IsGameOver()
   for (int i(0); i < width; i++) {
     for (int j(0); j < height; j++) {
       for (int direct(0); direct < MAX_DIRECT; direct++) {
-        if (CheckMove(i, j, static_cast<COMMON::EDirect>(direct), m_field))
-          return false;
+        if (CheckMove(i, j, static_cast<COMMON::EDirect>(direct), m_field)) return false;
       }
     }
   }

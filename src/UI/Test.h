@@ -1,17 +1,21 @@
 #pragma once
 
+#include <SFML/Graphics.hpp>
+
 #include "../Field/Field.h"
 #include "../Game/IGame.h"
 #include "../Game/SingleMode.h"
 #include "../Utils/Singletone.h"
-#include <SFML/Graphics.hpp>
 
 class Test : public sf::Drawable
 {
 public:
+  Test();
   Test(const sf::FloatRect& activeRect, uint32_t cellSize);
 
   void SetOffsetGame(sf::Vector2i offset);
+
+  void SetActiveRect(const sf::FloatRect& activeRect, uint32_t cellSize);
 
   void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 

@@ -6,12 +6,19 @@ class Grid : public sf::Drawable
 {
 public:
   /**
+   * @brief Конструктор по умолчанию
+   *
+   */
+  Grid();
+  /**
    * @brief Конструктор
    *
    * @param [in] coverSize Размер области, покрывающей экран
    * @param [in] cellSize Размер клетки в пикселях
    */
   Grid(sf::Vector2f coverSize, uint32_t cellSize);
+
+  void SetSize(sf::Vector2f coverSize, uint32_t cellSize);
 
   void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 

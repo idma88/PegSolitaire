@@ -1,15 +1,17 @@
 #pragma once
 
+#include <functional>
+#include <iostream>
+#include <memory>
+#include <vector>
+
+#include <glog/logging.h>
+
 #include "../Common/Common.h"
 #include "../Field/Field.h"
 #include "Player.h"
 #include "stdint.h"
 
-#include <functional>
-#include <glog/logging.h>
-#include <iostream>
-#include <memory>
-#include <vector>
 
 class IGame
 {
@@ -25,17 +27,13 @@ public:
   // Создание новой игры
   virtual bool CreateNewGame();
   // Выполнение хода
-  virtual bool DoMove(uint8_t x,
-                      uint8_t y,
-                      const std::vector<COMMON::EDirect>& directions);
+  virtual bool DoMove(uint8_t x, uint8_t y, const std::vector<COMMON::EDirect>& directions);
   // Загрузить копию поля
   void SetField(const Field& field);
   // Получить копию поля
   Field GetField();
   // Проверка возможности указанного хода/последовательности ходов
-  bool CheckMove(uint8_t x,
-                 uint8_t y,
-                 const std::vector<COMMON::EDirect>& directions);
+  bool CheckMove(uint8_t x, uint8_t y, const std::vector<COMMON::EDirect>& directions);
   // Проверка конца игры
   bool IsGameOver();
   // Установить список игроков
