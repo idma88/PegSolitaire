@@ -2,6 +2,7 @@
 #include "../Field/Field.h"
 #include "../Game/CoreGame.h"
 #include "../Game/Player.h"
+#include "../Game/SingleMode.h"
 
 #include "../UI/Grid.h"
 #include "../UI/Test.h"
@@ -85,6 +86,7 @@ AlignToCenter(sf::Rect<T> obj, sf::Rect<T> dest)
   tr.translate(destCenter.x - objCenter.x, destCenter.y - objCenter.y);
   return tr;
 }
+#pragma endregion
 
 int
 main(int argc, char* argv[])
@@ -99,8 +101,34 @@ main(int argc, char* argv[])
 
   setlocale(LC_ALL, "Russian");
 
+  // Начальный ход ещё не был выбран, сбрасывается, после второго клика по
+  // isSelevtionMove
+  bool isBeginMove = false;
+  // Выбор хода, после второго нажатия сбрасывается
+  bool isSelectionMove = false;
+
+  // Создадим поле
   Field& fld = Singleton<Field>::GetInstance();
+  // Выбирем английскую версию
   fld.Create(COMMON::ETypeField::ENGLISH);
+
+  // Создадим одного игрока
+  Player& playerOne = Singleton<Player>::GetInstance();
+  // Выбираем одиночные режимм
+  SingleMode& singleMode = Singleton<SingleMode>::GetInstance();
+
+  // Создаём список игроков
+  std::vector<Player> list_player{ playerOne };
+
+  // Загрузим список игроков
+  singleMode.SetPlayerList(list_player);
+  // Загрузим копию поля
+  singleMode.SetField(fld);
+
+  if (!singleMode.CreateNewGame())
+    std::cout << "Game not created!" << std::endl;
+  else
+    std::cout << "Game created!" << std::endl;
 
   // Размер поля
   const int SIZE = fld.GetWidth();
@@ -189,12 +217,19 @@ main(int argc, char* argv[])
     sf::Vector2f((cellSize * SIZE) - 1, (cellSize * SIZE) - 1));
 
   /// Расчёт кол-ва клеточек по x и y
-  int countCellX = (activeRectSize.x / cellSize);
-  int countCellY = (activeRectSize.y / cellSize);
+  sf::Vector2i countCell(ACTIVE_RECT_WIDTH / cellSize,
+                         ACTIVE_RECT_HEIGHT / cellSize);
+
+  int countCellX = (ACTIVE_RECT_WIDTH / cellSize);
+  int countCellY = (ACTIVE_RECT_HEIGHT / cellSize);
 
   /// Расчёт смещений клеточек для игрового поля
-  int offsetActiveX = floor(countCellX / 2) - floor(SIZE / 2); // 8
-  int offsetActiveY = floor(countCellY / 2) - floor(SIZE / 2); // 4
+  sf::Vector2i fieldSize(fld.GetWidth(), fld.GetHeight());
+  sf::Vector2i offsetActive = (countCell - fieldSize) / 2;
+  sf::Vector2i offsetGameField = offsetActive * (int)cellSize;
+
+  int offsetActiveX = ceil((countCellX - fld.GetWidth()) / 2);  // 8
+  int offsetActiveY = ceil((countCellY - fld.GetHeight()) / 2); // 4
 
   int offsetGameFieldX = cellSize * offsetActiveX;
   int offsetGameFieldY = cellSize * offsetActiveY;
@@ -244,9 +279,17 @@ main(int argc, char* argv[])
 #pragma endregion
 
   Test test(activeRect, cellSize);
-  test.SetOffsetGame(offsetGameFieldX, offsetGameFieldY);
+  test.SetOffsetGame(offsetGameField);
+
+  std::cout << "position x " << rectField.getPosition().x << std::endl;
+  std::cout << "position y " << rectField.getPosition().y << std::endl;
+  std::cout << "size x " << rectField.getSize().x << std::endl;
+  std::cout << "size x " << rectField.getSize().x << std::endl;
 
   while (window.isOpen()) {
+    sf::Transform invActiveTr = activeTr.getInverse();
+    sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+
     // window.clear(sf::Color::Black);
     window.clear(sf::Color(9, 133, 205));
 
@@ -259,6 +302,32 @@ main(int argc, char* argv[])
     // window.draw(oneCell, activeTr);
     /// Отрисовка синего прямоугольника, а именно самого игрового поля
     window.draw(rectField, activeTr);
+
+    sf::CircleShape c(10.f);
+    c.setFillColor(sf::Color::Red);
+    c.setOutlineColor(sf::Color::White);
+    c.setOutlineThickness(3);
+    c.move(sf::Vector2f(-c.getRadius(), -c.getRadius())); // offset to center
+
+    sf::Vector2f pointInActive =
+      invActiveTr.transformPoint(pixelPos.x, pixelPos.y);
+
+    // std::cout << pixelPos.x << std::endl;
+    // std::cout << pointInActive.x << ", " << pointInActive.y << std::endl;
+
+    if (pointInActive.x < 0)
+      pointInActive.x = 0;
+    if (pointInActive.x > ACTIVE_RECT_WIDTH - 1)
+      pointInActive.x = ACTIVE_RECT_WIDTH - 1;
+
+    if (pointInActive.y < 0)
+      pointInActive.y = 0;
+    if (pointInActive.y > ACTIVE_RECT_HEIGHT - 1)
+      pointInActive.y = ACTIVE_RECT_HEIGHT - 1;
+
+    c.move(pointInActive);
+
+    window.draw(c, activeTr);
 
     // крест по центру
     // window.draw(centerPnt);
@@ -276,6 +345,11 @@ main(int argc, char* argv[])
         case sf::Event::KeyPressed:
           if (event.key.code == sf::Keyboard::Escape)
             window.close();
+          break;
+        case sf::Event::MouseButtonPressed:
+          if (event.key.code == sf::Mouse::Left) {
+            // if(!isBeginMove && )
+          }
           break;
         default:
           break;

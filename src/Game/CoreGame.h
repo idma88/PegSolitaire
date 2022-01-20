@@ -16,6 +16,9 @@ public:
   // Деструктор
   ~CoreGame();
 
+  // Запуск основного цикла игры
+  void Lounch();
+
 public:
   //
   void CreateNewGame();

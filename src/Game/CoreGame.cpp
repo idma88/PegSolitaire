@@ -13,3 +13,7 @@ CoreGame::~CoreGame()
   code
   */
 }
+
+void
+CoreGame::Lounch()
+{}
