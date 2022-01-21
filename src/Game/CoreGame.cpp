@@ -26,11 +26,13 @@ CoreGame::CoreGame()
   singleMode.SetField(fld);
   // Размер поля
   SIZE.x = fld.GetWidth();
-  SIZE.x = fld.GetHeight();
+  SIZE.y = fld.GetHeight();
 
   m_grid.SetSize(calculations.coverSize, calculations.cellSize);
   m_test.SetActiveRect(calculations.activeRect, calculations.cellSize);
 
+  rectField.setSize(
+    sf::Vector2f((calculations.cellSize * SIZE.x) - 1, (calculations.cellSize * SIZE.y) - 1));
   rectField.move(calculations.offsetGameField.x, calculations.offsetGameField.y);
   rectField.setFillColor(sf::Color::Transparent);
   rectField.setOutlineColor(sf::Color::White);
@@ -50,8 +52,8 @@ CoreGame::Lounch()
     window.clear(sf::Color(9, 133, 205));
 
     window.draw(m_grid, calculations.gridTr);
-    // window.draw(m_test, calculations.activeTr);
-    // window.draw(rectField, calculations.activeTr);
+    window.draw(m_test, calculations.activeTr);
+    window.draw(rectField, calculations.activeTr);
 
     window.display();
 

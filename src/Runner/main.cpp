@@ -353,7 +353,6 @@
 int
 main(int argc, char* argv[])
 {
-  CoreGame game;
-  game.Lounch();
+  CoreGame().Lounch();
   return 0;
 }

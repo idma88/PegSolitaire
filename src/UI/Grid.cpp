@@ -1,6 +1,8 @@
 #include "Grid.h"
 
-Grid::Grid() {}
+Grid::Grid()
+  : m_points(sf::Lines)
+{}
 
 Grid::Grid(sf::Vector2f coverSize, uint32_t cellSize)
   : m_size(coverSize)
