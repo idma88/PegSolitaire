@@ -10,6 +10,10 @@
 #include "../Common/Common.h"
 #include "../UI/Calculations.h"
 #include "../UI/Grid.h"
+#include "../UI/Scene/BaseScene.h"
+#include "../UI/Scene/GameScene.h"
+#include "../UI/Scene/MenuScene.h"
+#include "../UI/Scene/StateScene.h"
 #include "../UI/Test.h"
 #include "stdint.h"
 
@@ -49,8 +53,12 @@ private:
   // Получаем расчёты
   Calculations& calculations = Singleton<Calculations>::GetInstance();
 
+  StateScene& currentScene = Singleton<StateScene>::GetInstance();
+
   // Размер поля
   sf::Vector2i SIZE;
 
   sf::RectangleShape rectField;
+
+  // std::shared_ptr<BaseScene> currentScene;
 };

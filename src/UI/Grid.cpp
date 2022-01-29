@@ -1,7 +1,7 @@
 #include "Grid.h"
 
 Grid::Grid()
-  : m_points(sf::Lines)
+// : m_points(sf::Lines)
 {}
 
 Grid::Grid(sf::Vector2f coverSize, uint32_t cellSize)
@@ -16,6 +16,7 @@ void
 Grid::SetSize(sf::Vector2f coverSize, uint32_t cellSize)
 {
   m_size = coverSize;
+  m_points.setPrimitiveType(sf::Lines);
   m_cellSize = cellSize < 2 ? 2 : cellSize;
   CalculatePoints();
 }

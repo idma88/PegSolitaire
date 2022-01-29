@@ -65,7 +65,7 @@ Test::SetOffsetGame(sf::Vector2i offset)
 void
 Test::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-  Field fld = Singleton<SingleMode>::GetInstance().GetField();
+  Field& fld = Singleton<SingleMode>::GetInstance().GetField();
   std::vector<COMMON::ECell> fldVec = fld.GetField();
 
   const int margin = 5;

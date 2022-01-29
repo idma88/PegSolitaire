@@ -40,6 +40,8 @@ CoreGame::CoreGame()
 
   singleMode.SetField(fld);
   singleMode.CreateNewGame();
+
+  // currentScene = std::make_shared<MenuScene>();
 }
 
 void
@@ -54,6 +56,8 @@ CoreGame::Lounch()
     window.draw(m_grid, calculations.gridTr);
     window.draw(m_test, calculations.activeTr);
     window.draw(rectField, calculations.activeTr);
+    // window.draw(*currentScene, calculations.activeTr);
+    window.draw(*currentScene.GetCurrentState(), calculations.activeTr);
 
     window.display();
 
