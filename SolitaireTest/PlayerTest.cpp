@@ -1,5 +1,5 @@
-#include "../src/Game/Player.h"
-#include "../src/Common/Common.h"
+#include "../src/Engine/Player.h"
+#include "../src/Engine/Common.h"
 #include "CommonTest.h"
 #include "gtest/gtest.h"
 

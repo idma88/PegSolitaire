@@ -29,14 +29,11 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
 
 endif()
 
-set(field_dir_test ../src/Field/)
-set(common_dir_test ../src/Common/)
-set(game_dir_test ../src/Game/)
+set(engine_dir_test ../src/Engine/)
+set(utils_dir_test ../src/Utils/)
 
-file(GLOB_RECURSE common_sources_test ${field_dir_test}*.cpp ${common_dir_test}*.cpp 
-                                                                ${game_dir_test}*.cpp )  
-file(GLOB_RECURSE common_headers_test ${field_dir_test}*.h ${common_dir_test}*.h 
-                                                                ${game_dir_test}*.h)
+file(GLOB_RECURSE common_sources_test ${engine_dir_test}*.cpp ${utils_dir_test}*.cpp)  
+file(GLOB_RECURSE common_headers_test ${engine_dir_test}*.h ${utils_dir_test}*.h)
 
 file(GLOB_RECURSE TEST_SRC_SOURCE ${PROJECT_SOURCE_DIR}/*.cpp)
 file(GLOB_RECURSE TEST_SRC_HEADERS ${PROJECT_SOURCE_DIR}/*.h)
@@ -48,6 +45,12 @@ set(sources_test
     ${common_headers_test}
 )
 
+find_package(
+            SFML 2.5
+            COMPONENTS system window graphics
+            REQUIRED)
+
+
 find_library(GLOG_LIB glogd ${CMAKE_BINARY_DIR}/glog/Debug)
 if(GLOG_LIB)
     message ("GLOG_TEST FOUND!!!")
@@ -56,5 +59,6 @@ else()
 endif()
 
 add_executable(testmain ${sources_test})
-target_link_libraries(testmain gtest gmock_main gtest_main glog)
+target_link_libraries(testmain gtest gmock_main gtest_main glog sfml-system sfml-window
+        sfml-graphics)
 add_test(NAME testmain COMMAND testmain)

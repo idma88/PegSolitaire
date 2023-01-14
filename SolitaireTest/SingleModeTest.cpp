@@ -1,8 +1,8 @@
-#include "../src/Game/SingleMode.h"
-#include "../src/Common/Common.h"
-#include "../src/Field/Field.h"
-#include "../src/Game/IGame.h"
-#include "../src/Game/Player.h"
+#include "../src/Engine/SingleMode.h"
+#include "../src/Engine/Common.h"
+#include "../src/Engine/Field.h"
+#include "../src/Engine/IGame.h"
+#include "../src/Engine/Player.h"
 #include "CommonTest.h"
 #include "gtest/gtest.h"
 
@@ -125,10 +125,9 @@ TEST_F(SingleModeTest, CheckingPositiveMultiDoMove)
   // Попробуем создать новую игру
   ASSERT_TRUE(singlemode.CreateNewGame());
   // Установим направление для мультихода
-  direct = { COMMON::EDirect::RIGHT,
-             COMMON::EDirect::DOWN,
-             COMMON::EDirect::LEFT,
-             COMMON::EDirect::UP };
+  direct = {
+    COMMON::EDirect::RIGHT, COMMON::EDirect::DOWN, COMMON::EDirect::LEFT, COMMON::EDirect::UP
+  };
   // Попробуем сделать ход
   ASSERT_TRUE(singlemode.DoMove(2, 2, direct));
   // Проверим счёт игрока

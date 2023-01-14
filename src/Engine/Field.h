@@ -1,9 +1,12 @@
 #pragma once
 
-#include "../Common/Common.h"
+#include "Common.h"
+#include "../Utils/base64.h"
 #include "stdint.h"
 
 #include <algorithm>
+#include <string>
+#include <fstream>
 #include <glog/logging.h>
 #include <iostream>
 #include <memory>
@@ -21,9 +24,7 @@ public:
   // Функция создания поля для EN и EU
   bool Create(COMMON::ETypeField type);
   // Функция создания произвольного поля
-  bool Create(uint8_t width,
-              uint8_t height,
-              const std::vector<COMMON::ECell>& pattern);
+  bool Create(uint8_t width, uint8_t height, const std::vector<COMMON::ECell>& pattern);
   // Функция взаимодействия с ячейкой
   bool SetCell(uint8_t x_field, uint8_t y_field, const COMMON::ECell value);
   // Функция получения игрового поля
@@ -34,6 +35,8 @@ public:
   uint8_t GetHeight() const;
   // Проверка поставленной фишки
   COMMON::ECell GetCell(uint8_t x, uint8_t y) const;
+  // Открываем чертёж для карты
+  std::string OpenBlueprint(std::string nameFile);
 
 public:
   // Максимальная ширина поля

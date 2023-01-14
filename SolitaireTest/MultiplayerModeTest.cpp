@@ -1,8 +1,8 @@
-#include "../src/Game/MultiplayerMode.h"
-#include "../src/Common/Common.h"
-#include "../src/Field/Field.h"
-#include "../src/Game/IGame.h"
-#include "../src/Game/Player.h"
+#include "../src/Engine/MultiplayerMode.h"
+#include "../src/Engine/Common.h"
+#include "../src/Engine/Field.h"
+#include "../src/Engine/IGame.h"
+#include "../src/Engine/Player.h"
 #include "CommonTest.h"
 #include "gtest/gtest.h"
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Common/Common.h"
-#include "../Field/Field.h"
+#include "Common.h"
+#include "Field.h"
 #include "stdint.h"
 
 #include <glog/logging.h>
