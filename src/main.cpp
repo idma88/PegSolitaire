@@ -1,8 +1,9 @@
 #include "Engine/Common.h"
 #include "Engine/Field.h"
 #include "Engine/Grid.h"
-#include "Engine/Player.h"
 #include "Engine/Math.h"
+#include "Engine/Player.h"
+
 
 #include <SFML/Graphics.hpp>
 // #include <glog/logging.h>
@@ -23,7 +24,7 @@ main(int argc, char* argv[])
 
   Field _field;
   bool trueCreate;
-  _field.Create(COMMON::ETypeField::ENGLISH);
+  _field.Create("ENGLISH");
   trueCreate = _field.SetCell(SIZE, SIZE, COMMON::ECell::SET);
 #pragma endregion
 

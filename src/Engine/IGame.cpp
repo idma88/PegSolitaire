@@ -7,6 +7,12 @@ IGame::GetGameMode() const
   return m_mode_game;
 }
 
+void
+IGame::SetGameMode(COMMON::EGameMode mode)
+{
+  m_mode_game = mode;
+}
+
 bool
 IGame::CreateNewGame()
 {
@@ -16,17 +22,14 @@ IGame::CreateNewGame()
     return false;
   }
   // Должен быть один игрок в одиночном режиме
-  if ((m_list_player.size() != 1) &&
-      (m_mode_game == COMMON::EGameMode::SINGLE)) {
-    LOG(WARNING)
-      << "IGame::CreateNewGame : m_list_player != 1 and single mode!";
+  if ((m_list_player.size() != 1) && (m_mode_game == COMMON::EGameMode::SINGLE)) {
+    LOG(WARNING) << "IGame::CreateNewGame : m_list_player != 1 and single mode!";
     return false;
   }
   // Должно быть больше одного игрока в мультиплеере
   if (((m_list_player.size() <= 1) || (m_list_player.size() > 4)) &&
       (m_mode_game == COMMON::EGameMode::MULTIPLAYER)) {
-    LOG(WARNING)
-      << "IGame::CreateNewGame : m_list_player < 1 and multiplayer mode!";
+    LOG(WARNING) << "IGame::CreateNewGame : m_list_player < 1 and multiplayer mode!";
     return false;
   }
   // Проверим поле на нулевые размеры
@@ -35,13 +38,17 @@ IGame::CreateNewGame()
     return false;
   }
 
+  // Обновляем счёт
+  for (auto& i : m_list_player) {
+    if (!i.SetBeginScore(0))
+      return false;
+  }
+
   return true;
 }
 
 bool
-IGame::DoMove(uint8_t x,
-              uint8_t y,
-              const std::vector<COMMON::EDirect>& directions)
+IGame::DoMove(uint8_t x, uint8_t y, const std::vector<COMMON::EDirect>& directions)
 {
   // Проверим что последовательность ходов возможна
   if (!CheckMove(x, y, directions))
@@ -55,6 +62,13 @@ IGame::DoMove(uint8_t x,
     if (!MoveShift(x, y, *dir))
       return false;
   }
+
+  // Добавим очки к активному игроку
+  if (!m_list_player[m_active_user].AddPoints((int16_t)directions.size()))
+    return false;
+
+  // Если достигли последнего игрока, то переключим на первого
+  m_active_user = (m_active_user + 1) % m_list_player.size();
 
   return true;
 }
@@ -72,9 +86,7 @@ IGame::GetField()
 }
 
 bool
-IGame::CheckMove(uint8_t x,
-                 uint8_t y,
-                 const std::vector<COMMON::EDirect>& directions)
+IGame::CheckMove(uint8_t x, uint8_t y, const std::vector<COMMON::EDirect>& directions)
 {
   // скопируем объект
   Field copy_field = m_field;
@@ -105,10 +117,8 @@ IGame::CheckMove(uint8_t x, uint8_t y, COMMON::EDirect direction, Field& field)
   int8_t xFar = (int8_t)x + 2 * xShift;
   int8_t yFar = (int8_t)y + 2 * yShift;
 
-  if ((xFar < 0) || (xFar >= field.GetWidth()) || (yFar < 0) ||
-      (yFar >= field.GetHeight())) {
-    LOG(WARNING)
-      << "IGame::CheckMove : Checking for negative numbers and out of range";
+  if ((xFar < 0) || (xFar >= field.GetWidth()) || (yFar < 0) || (yFar >= field.GetHeight())) {
+    LOG(WARNING) << "IGame::CheckMove : Checking for negative numbers and out of range";
     return false;
   }
 

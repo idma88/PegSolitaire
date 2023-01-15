@@ -13,13 +13,6 @@ enum class ECell : uint8_t
   SET = 2
 };
 
-// Тип поля
-enum class ETypeField
-{
-  ENGLISH = 0,
-  EUROPEAN = 1
-};
-
 // Игрок или компьютер
 enum class EPlayerType
 {

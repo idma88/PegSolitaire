@@ -9,118 +9,78 @@ Field::Field()
 Field::~Field() {}
 
 bool
-Field::Create(COMMON::ETypeField type)
+Field::Create(const std::string& nameField)
 {
-  // Проверка типа поля
-  if ((type != COMMON::ETypeField::ENGLISH) && (type != COMMON::ETypeField::EUROPEAN)) {
-    LOG(ERROR) << "Field::Create : Invalid field type value in Create()!";
+  // Получаем чертёж поля
+  std::string ready_bp = GetBlueprint(nameField);
+
+  if (ready_bp.empty()) {
     return false;
   }
 
-  // Устанавливаем значения по умолчанию
-  m_width = MIN_WIDTH;
-  m_height = MIN_HEIGHT;
+  uint8_t CountCell = ready_bp.length();
 
-  // TODO TEST SUCCESS (ОПТИМИЗИРОВАТЬ)
-
-  std::string ready_bp = OpenBlueprint("ENGLISH");
-
-  if (ready_bp.empty()) {
+  if ((CountCell > MAX_COUNT_CELL) || (CountCell < MIN_COUNT_CELL)) {
+    LOG(ERROR) << "Field::Create : Сustom field is larger than maximum constants!";
     return false;
   }
 
   // Меняем длину вектора под размер поля
   m_field.resize(ready_bp.length());
 
+  // ДОСТУПНЫЕ СИМВОЛЫ
+  const int MIN_NUM_AVAILABLE = 48;
+  const int MAX_NUM_AVAILABLE = 50;
+
   int i = 0;
   for (char& ch : ready_bp) {
-    if ((int)ch > 47 && (int)ch < 58) {
+    if ((int)ch >= MIN_NUM_AVAILABLE && (int)ch <= MAX_NUM_AVAILABLE) {
       m_field[i] = static_cast<COMMON::ECell>((int)(ch - '0'));
       ++i;
     }
   }
 
-  //
-
-  switch (type) {
-    // Отрисовка поля для Английской версии
-    case COMMON::ETypeField::ENGLISH:
-      m_field = {
-        COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::SET,  COMMON::ECell::SET,
-        COMMON::ECell::SET,  COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::LOCK,
-        COMMON::ECell::LOCK, COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-        COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::SET,  COMMON::ECell::SET,
-        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-        COMMON::ECell::FREE, COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::LOCK,
-        COMMON::ECell::LOCK, COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-        COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::LOCK,
-        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::LOCK,
-        COMMON::ECell::LOCK
-      };
-      break;
-    // Отрисовка поля для Европейской версии
-    case COMMON::ETypeField::EUROPEAN:
-      m_field = {
-        COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::SET,  COMMON::ECell::SET,
-        COMMON::ECell::SET,  COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::LOCK,
-        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-        COMMON::ECell::SET,  COMMON::ECell::LOCK, COMMON::ECell::SET,  COMMON::ECell::SET,
-        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-        COMMON::ECell::FREE, COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::LOCK,
-        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,
-        COMMON::ECell::SET,  COMMON::ECell::LOCK, COMMON::ECell::LOCK, COMMON::ECell::LOCK,
-        COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::SET,  COMMON::ECell::LOCK,
-        COMMON::ECell::LOCK
-      };
-      break;
-  }
-
   return true;
 }
 
-bool
-Field::Create(uint8_t width, uint8_t height, const std::vector<COMMON::ECell>& pattern)
-{
-  if ((width > MAX_WIDTH) || (height > MAX_HEIGHT)) {
-    LOG(ERROR) << "Field::Create : Сustom field is larger than maximum constants!";
-    return false;
-  }
+// DEPRECATED
+// bool
+// Field::Create(uint8_t width, uint8_t height, const std::vector<COMMON::ECell>& pattern)
+// {
+//   if ((width > MAX_WIDTH) || (height > MAX_HEIGHT)) {
+//     LOG(ERROR) << "Field::Create : Сustom field is larger than maximum constants!";
+//     return false;
+//   }
 
-  // Проверяем вектор на наличие данных
-  if (pattern.size() == 0) {
-    LOG(ERROR) << "Field::Create : There is no data!";
-    return false;
-  }
+//   // Проверяем вектор на наличие данных
+//   if (pattern.size() == 0) {
+//     LOG(ERROR) << "Field::Create : There is no data!";
+//     return false;
+//   }
 
-  // Проверяем вектор на соответствие размера
-  if (pattern.size() != (width * height)) {
-    LOG(ERROR) << "Field::Create : Vector size does not fit the generated field!";
-    return false;
-  }
+//   // Проверяем вектор на соответствие размера
+//   if (pattern.size() != (width * height)) {
+//     LOG(ERROR) << "Field::Create : Vector size does not fit the generated field!";
+//     return false;
+//   }
 
-  if (!std::all_of(pattern.begin(), pattern.end(), [](COMMON::ECell item) {
-        return (item == COMMON::ECell::FREE) || (item == COMMON::ECell::LOCK) ||
-               (item == COMMON::ECell::SET);
-      })) {
-    LOG(ERROR) << "Field::Create : Invalid data type in pattern!";
-    return false;
-  }
+//   if (!std::all_of(pattern.begin(), pattern.end(), [](COMMON::ECell item) {
+//         return (item == COMMON::ECell::FREE) || (item == COMMON::ECell::LOCK) ||
+//                (item == COMMON::ECell::SET);
+//       })) {
+//     LOG(ERROR) << "Field::Create : Invalid data type in pattern!";
+//     return false;
+//   }
 
-  // Перепишем размеры поля
-  m_width = width;
-  m_height = height;
-  // Меняем длину вектора под размер поля
-  m_field.resize(width * height);
-  // Копируем данные из шаблона в поле
-  std::copy(pattern.begin(), pattern.end(), m_field.begin());
-  return true;
-}
+//   // Перепишем размеры поля
+//   m_width = width;
+//   m_height = height;
+//   // Меняем длину вектора под размер поля
+//   m_field.resize(width * height);
+//   // Копируем данные из шаблона в поле
+//   std::copy(pattern.begin(), pattern.end(), m_field.begin());
+//   return true;
+// }
 
 bool
 Field::SetCell(uint8_t x_field, uint8_t y_field, const COMMON::ECell value)
@@ -178,7 +138,7 @@ Field::GetCell(uint8_t x, uint8_t y) const
 }
 
 std::string
-Field::OpenBlueprint(std::string nameFile)
+Field::GetBlueprint(std::string nameFile)
 {
   std::string blueprintB64;
   // окрываем файл для чтения

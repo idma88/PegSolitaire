@@ -43,7 +43,6 @@ private:
   COMMON::EPlayerType m_essence = COMMON::EPlayerType::HUMAN;
   // Колличество съеденых или оставшихся фишек
   uint32_t m_score = 0;
-  // Максимально возможное кол-во очков MAX_WIDTH х MAX_HEIGHT - 2
-  static constexpr uint16_t MAX_SCORE =
-    ((uint16_t)Field::MAX_WIDTH * (uint16_t)Field::MAX_HEIGHT) - 2;
+  // Максимально возможное кол-во очков MAX_COUNT_CELL - 2
+  static constexpr uint16_t MAX_SCORE = Field::MAX_COUNT_CELL - 2;
 };
